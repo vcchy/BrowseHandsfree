@@ -48,6 +48,34 @@
       }
     },
 
+    mounted () {
+      console.log(`                _.-'-'--.
+               ,', ~'\` ( .'\`.
+              ( ~'_ , .'(  >-)
+             ( .-' (  \`__.-<  )
+              ( \`-..--'_   .-')
+               \`(_( (-' \`-'.-)
+                   \`-.__.-'=/
+                      \`._\`='
+                         \\\\
+                          \\\\
+  __________
+  \\______   \\_______  ______  _  ________ ____
+   |    |  _/\\_  __ \\/  _ \\ \\/ \\/ /  ___// __ \\
+   |    |   \\ |  | \\(  <_> )     /\\___ \\\\  ___/
+   |______  / |__|   \\____/ \\/\\_//____  >\\___  >
+          \\/                          \\/     \\/
+    ___ ___                    .___        _____
+   /   |   \\_____    ____    __| _/_______/ ____\\______   ____   ____
+  /    ~    \\__  \\  /    \\  / __ |/  ___/\\   __\\\\_  __ \\_/ __ \\_/ __ \\
+  \\    Y    // __ \\|   |  \\/ /_/ |\\___ \\  |  |   |  | \\/\\  ___/\\  ___/
+   \\___|_  /(____  /___|  /\\____ /____  > |__|   |__|    \\___  >\\___  >
+         \\/      \\/     \\/      \\/    \\/                     \\/     \\/
+
+    Our vision is a world where anyone can do anything.
+    Started by Oz Ramos; supported by friends ♥`)
+    },
+
     methods: {
       startWebcam () {
         console.log('starting webcam')
@@ -55,25 +83,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-  img
-    max-width: 100%
-
-  .toolbar__title
-    img
-      vertical-align: middle
-    small
-      font-size: 0.5em
-
-  .card--flex-toolbar
-    position: absolute
-    top: -48px
-    width: 100%
-
-  .toolbar--fixed.toolbar--extended
-    z-index: 0
-
-  .relative
-    position: relative
-</style>

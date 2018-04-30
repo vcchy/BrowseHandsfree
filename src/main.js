@@ -19,6 +19,7 @@ import {
   transitions
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
+import '@/assets/styles/main.styl'
 
 Vue.use(Vuetify, {
   components: {
