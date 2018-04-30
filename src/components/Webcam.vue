@@ -68,7 +68,10 @@
 
     methods: {
       startWebcam () {
-        navigator.mediaDevices.getUserMedia({video: true, audio: false})
+        this.$store.commit('set', ['loadingText', 'Warming up webcam...'])
+        this.$store.commit('set', ['lastFrame', Math.random()])
+        this.$nextTick(() => {
+          navigator.mediaDevices.getUserMedia({video: true, audio: false})
           .then((stream) => {
             this.refs.webcam.srcObject = stream
             this.$store.commit('set', ['isWebcamOn', true])
@@ -77,12 +80,14 @@
             // Start tracking on IOS11
             if (this.isIOS11 && this.isTracking) this.trackFaces()
           })
+        })
       },
 
       /**
        * Initialize our facetracking library
        */
       initBRF () {
+        this.$store.commit('set', ['loadingText', 'Fetching AI...'])
         this.asmSupport && this.testSafariWebAssemblyBug()
         this.setIsIOS11()
         this.injectBRF()
