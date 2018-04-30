@@ -12,13 +12,23 @@ export default new Vuex.Store({
     // The BRF Manager
     brfManger: null,
 
+    // The BRF canvas resolution
+    // @SEE https://tastenkunst.github.io/brfv4_docs/
+    brfResolution: null,
+
     // The panel inside the app's main extended toolbar
     isMainPanelVisible: true,
+
+    // Whether we are tracking faces or not
+    isTracking: false,
 
     isWebcamOn: false,
 
     // The last requestAnimationFrame reference
     lastFrame: null,
+
+    // Loading text (or null)
+    loadingText: null,
 
     // App-wide refs
     refs: {
@@ -60,6 +70,11 @@ export default new Vuex.Store({
       commit('set', ['lastFrame', requestAnimationFrame(() => {
         dispatch('drawLoop')
       })])
-    }
+    },
+
+    /**
+     * Initializes the manager
+     */
+    initBRFManager ({state}) { state.brfManager && state.brfManager.init(state.brfResolution, state.brfResolution, 'com.browsehandsfree') }
   }
 })

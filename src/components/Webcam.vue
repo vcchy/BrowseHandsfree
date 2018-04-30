@@ -1,10 +1,16 @@
 <template lang="pug">
-  div
+  v-card-text(:class='{hidden: !isMainPanelVisible}').text-xs-center
     video.hidden(ref='webcam' playsinline)
-    v-card-text(v-if='isMainPanelVisible').text-xs-center
+    canvas(ref='feed' :class='{hidden: !isWebcamOn}')
+    div(v-if='!isWebcamOn')
       p
         img(src='@/assets/browsehandsfree-logo.png' alt='BrowseHandsfree' height=100)
       p.text-xs-left Welcome to <b>BrowseHandsfree</b>, a platform that lets you browse the web hands-free (via face tracking)! To get started, lets first turn on your webcam.
+    div.text-xs-center(v-if='loadingText')
+      p {{loadingText}}
+      p
+        v-progress-circular(indeterminate size=50)
+    div(v-if='!isWebcamOn')
       p
         v-btn(@click.stop='startWebcam' color='primary')
           v-icon.mr-2 videocam
@@ -25,7 +31,11 @@
     computed: mapState([
       'brf',
       'brfManager',
+      'brfResolution',
       'isMainPanelVisible',
+      'isTracking',
+      'isWebcamOn',
+      'loadingText',
       'refs'
     ]),
 
@@ -38,9 +48,8 @@
         // Detect whether we support ASM or WASM
         asmSupport: typeof WebAssembly === 'object',
 
-        // The BRF canvas resolution
-        // @SEE https://tastenkunst.github.io/brfv4_docs/
-        brfResolution: null,
+        // The BRF file path
+        brfPath: CONFIG.brf.wasmPath,
 
         // Whether we're running IOS11
         isIOS11: false
@@ -48,7 +57,10 @@
     },
 
     mounted () {
-      this.$store.commit('merge', ['refs', {webcam: this.$refs.webcam}])
+      this.$store.commit('merge', ['refs', {
+        webcam: this.$refs.webcam,
+        feed: this.$refs.feed
+      }])
     },
 
     methods: {
@@ -59,7 +71,8 @@
             this.$store.commit('set', ['isWebcamOn', true])
             this.$store.dispatch('drawLoop')
 
-            if (this.isIOS11) this.trackFaces()
+            // Start tracking on IOS11
+            if (this.isIOS11 && this.isTracking) this.trackFaces()
           })
       },
 
@@ -69,6 +82,8 @@
       initBRF () {
         this.asmSupport && this.testSafariWebAssemblyBug()
         this.setIsIOS11()
+        this.injectBRF()
+        this.startLoadingBRF()
       },
 
       /**
@@ -97,11 +112,76 @@
       },
 
       /**
+       * Loads the correct BRF file, based on web assembly support
+       */
+      injectBRF () {
+        const script = document.createElement('script')
+        script.setAttribute('src', this.brfPath + CONFIG.brf.filename)
+        script.setAttribute('async', true)
+        script.setAttribute('type', 'text/javascript')
+        document.getElementsByTagName('head')[0].appendChild(script)
+      },
+
+      /**
+       * Starts loading the SDK file
+       */
+      startLoadingBRF () {
+        // on iOS we want to close the video stream first and
+        // wait for the heavy BRFv4 initialization to finish.
+        // Once that is done, we start the stream again.
+        // Otherwise the stream will just stop and won't update anymore.
+        if (this.isIOS11) {
+          this.refs.webcam.pause()
+          this.refs.webcam.srcObject.getTracks().forEach(track => track.stop())
+        }
+
+        this.$store.commit('set', ['loadingText', 'Waking up AI...'])
+        this.waitForSDK()
+      },
+
+      /**
+       * Waits for the SDK to get loaded before starting it
+       */
+      waitForSDK () {
+        // Setup BRF config
+        if (this.brf === null && window.initializeBRF) {
+          let me = this
+          this.$store.commit('set', ['brf', {locateFile (filename) { return me.brfPath + filename }}])
+          window.initializeBRF(this.brf)
+        }
+
+        // Start initialize SDK
+        if (this.brf && this.brf.sdkReady) {
+          this.initSDK()
+        } else {
+          return setTimeout(this.waitForSDK, 100)
+        }
+      },
+
+      /**
+       * Initialize the SDK
+       */
+      initSDK () {
+        this.$store.commit('set', ['brfResolution', new this.brf.Rectangle(0, 0, this.refs.feed.width, this.refs.feed.height)])
+        this.$store.commit('set', ['brfManager', new this.brf.BRFManager()])
+        this.$store.dispatch('initBRFManager')
+
+        // Start the camera (if on IOS11 or just start tracking)
+        if (this.isIOS11) {
+          setTimeout(() => this.startWebcam, 2000)
+        } else {
+          this.$store.commit('set', ['isTracking', true])
+          this.trackFaces()
+        }
+
+        this.$store.commit('set', ['loadingText', null])
+      },
+
+      /**
        * Starts tracking faces
        */
       trackFaces () {
         if (!this.isWebcamOn || !this.refs.feed) return
-
         let faces = null
         let context = this.refs.feed.getContext('2d')
 

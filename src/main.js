@@ -17,6 +17,7 @@ import {
   VList,
   VToolbar,
   VNavigationDrawer,
+  VProgressCircular,
   transitions
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
@@ -34,6 +35,7 @@ Vue.use(Vuetify, {
     VList,
     VNavigationDrawer,
     VToolbar,
+    VProgressCircular,
     transitions
   },
 
