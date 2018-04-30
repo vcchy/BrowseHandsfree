@@ -4,6 +4,7 @@ import Package from '~/package.json'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store.js'
 import {
   Vuetify,
   VApp,
@@ -48,6 +49,7 @@ Vue.prototype.$version = Package.version
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
