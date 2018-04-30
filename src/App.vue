@@ -12,21 +12,10 @@
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title Start Here
             v-spacer
-            v-btn(icon @click.stop='isMainPanelVisible = !isMainPanelVisible')
+            v-btn(icon @click.stop='toggleMainPanelVisibility')
               v-icon menu
           v-divider
-          v-card-text(v-if='isMainPanelVisible').text-xs-center
-            p
-              img(src='@/assets/browsehandsfree-logo.png' alt='BrowseHandsfree' height=100)
-            p.text-xs-left Welcome to <b>BrowseHandsfree</b>, a platform that lets you browse the web hands-free (via face tracking)! To get started, lets first turn on your webcam.
-            p
-              v-btn(@click.stop='startWebcam' color='primary')
-                v-icon.mr-2 videocam
-                | Start Webcam
-            p
-              small - or -
-            p
-              router-link(to='about') Learn more
+          Webcam
 
     v-content
       router-view
@@ -35,12 +24,17 @@
 </template>
 
 <script>
+  import Webcam from '@/components/Webcam'
+
   export default {
     name: 'App',
 
+    components: {
+      Webcam
+    },
+
     data () {
       return {
-        isMainPanelVisible: true,
         menuItems: [{
           icon: 'bubble_chart',
           title: 'Inspire'
@@ -77,9 +71,7 @@
     },
 
     methods: {
-      startWebcam () {
-        console.log('starting webcam')
-      }
+      toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') }
     }
   }
 </script>
