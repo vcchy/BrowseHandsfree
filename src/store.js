@@ -16,6 +16,11 @@ export default new Vuex.Store({
     // @SEE https://tastenkunst.github.io/brfv4_docs/
     brfResolution: null,
 
+    // Different gesture confidences
+    gesture: {
+      click: 0
+    },
+
     // The panel inside the app's main extended toolbar
     isMainPanelVisible: true,
 
