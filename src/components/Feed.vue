@@ -2,7 +2,10 @@
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
       canvas.flip-h(ref='feed')
-      v-btn(:color='isWebcamOn ? "error" : "primary"' @click='stopFeed')
+      v-btn(v-if='isWebcamOn && isTracking' color='primary' @click='recalibrate')
+        v-icon.mr-2 gps_fixed
+        | Calibrate
+      v-btn(color='error' @click='stopFeed')
         v-icon.mr-2 videocam_off
         | Stop Webcam
 </template>
@@ -51,7 +54,12 @@ export default {
       $feed.height = width / aspectRatio
 
       this.$store.dispatch('initBRFManager')
-    }, 50, {leading: true})
+    }, 50, {leading: true}),
+
+    /**
+     * Starts the recalibration process
+     */
+    recalibrate () { console.log('recalibrate') }
   }
 }
 </script>

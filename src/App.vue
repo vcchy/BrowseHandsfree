@@ -14,9 +14,15 @@
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title Start Here
             v-spacer
-            v-btn(icon @click='toggleWebcam' :color='isWebcamOn ? "error" : "primary"')
-              v-icon(v-if='isWebcamOn') videocam_off
-              v-icon(v-else) videocam
+            v-tooltip(v-if='isWebcamOn && isTracking')
+              v-btn(icon @click='recalibrate' slot='activator')
+                v-icon gps_fixed
+              span Calibrate
+            v-tooltip
+              v-btn(icon @click='toggleWebcam' :color='isWebcamOn ? "error" : "primary"' slot='activator')
+                v-icon(v-if='isWebcamOn') videocam_off
+                v-icon(v-else) videocam
+              span(v-text='isWebcamOn ? "Turn Webcam Off" : "Turn Webcam On"')
             v-btn(icon @click='toggleMainPanelVisibility')
               v-icon menu
           v-divider
@@ -38,7 +44,8 @@
     name: 'App',
 
     computed: mapState([
-      'isWebcamOn'
+      'isWebcamOn',
+      'isTracking'
     ]),
 
     components: {
@@ -87,7 +94,12 @@
     methods: {
       toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') },
 
-      toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') }
+      toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') },
+
+      /**
+       * Starts the recalibration process
+       */
+      recalibrate () { console.log('recalibrate') }
     }
   }
 </script>

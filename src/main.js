@@ -16,6 +16,7 @@ import {
   VIcon,
   VList,
   VToolbar,
+  VTooltip,
   VNavigationDrawer,
   VProgressCircular,
   transitions
@@ -35,6 +36,7 @@ Vue.use(Vuetify, {
     VList,
     VNavigationDrawer,
     VToolbar,
+    VTooltip,
     VProgressCircular,
     transitions
   },
