@@ -9,6 +9,9 @@
 <p align="center"><a href="#about">About</a> • <a href="#building">Building</a> • <a href="#links">Links</a> • <a href="#privacy">Privacy</a> • <a href="#license">License</a>
 
 ## About
+
+![](https://media.giphy.com/media/9xttCkOB9GPMvTeStO/giphy.gif)
+
 **BrowseHandsfree** is a platform that lets you browse the web hands-free. It does this via face tracking through your webcam, positioning a cursor over the part of the screen that your face is pointed at.
 
 This project currently uses the trial version of [BRFv4](https://tastenkunst.github.io/brfv4_docs/), and we'll be using [Tensorflow.js](https://js.tensorflow.org/) to train custom gestures. The project is built on top of [VueJS](https://vuejs.org/).

@@ -2,7 +2,9 @@
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
       canvas.flip-h(ref='feed')
-      v-btn(color='primary' @click='stopFeed') Stop Webcam
+      v-btn(:color='isWebcamOn ? "error" : "primary"' @click='stopFeed')
+        v-icon.mr-2 videocam_off
+        | Stop Webcam
 </template>
 
 <script>

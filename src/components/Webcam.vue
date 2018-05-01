@@ -12,7 +12,7 @@
         v-progress-circular(indeterminate size=50)
     div(v-if='!isWebcamOn')
       p
-        v-btn(@click.stop='startWebcam' color='primary')
+        v-btn(@click.stop='toggleWebcam' color='primary')
           v-icon.mr-2 videocam
           | Start Webcam
       p
@@ -46,7 +46,7 @@
     ]),
 
     watch: {
-      isWebcamOn () { this.isWebcamOn && this.initBRF() }
+      isWebcamOn () { this.isWebcamOn && this.startWebcam() }
     },
 
     data () {
@@ -67,6 +67,8 @@
     },
 
     methods: {
+      toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') },
+
       startWebcam () {
         this.$store.commit('set', ['loadingText', 'Warming up webcam...'])
         this.$store.commit('set', ['lastFrame', Math.random()])
@@ -79,6 +81,8 @@
 
             // Start tracking on IOS11
             if (this.isIOS11 && this.isTracking) this.trackFaces()
+
+            this.initBRF()
           })
         })
       },

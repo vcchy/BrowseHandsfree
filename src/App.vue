@@ -10,11 +10,14 @@
       v-spacer
     v-layout(row pb-2)
       v-flex.relative(xs8 offset-xs2 md6 offset-md3)
-        v-card.card--flex-toolbar
+        v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title Start Here
             v-spacer
-            v-btn(icon @click.stop='toggleMainPanelVisibility')
+            v-btn(icon @click='toggleWebcam' :color='isWebcamOn ? "error" : "primary"')
+              v-icon(v-if='isWebcamOn') videocam_off
+              v-icon(v-else) videocam
+            v-btn(icon @click='toggleMainPanelVisibility')
               v-icon menu
           v-divider
           Webcam
@@ -29,9 +32,14 @@
   import Webcam from '@/components/Webcam'
   import Pointer from '@/components/Pointer'
   import Calibrator from '@/components/Calibrator'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'App',
+
+    computed: mapState([
+      'isWebcamOn'
+    ]),
 
     components: {
       Calibrator,
@@ -77,7 +85,9 @@
     },
 
     methods: {
-      toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') }
+      toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') },
+
+      toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') }
     }
   }
 </script>
