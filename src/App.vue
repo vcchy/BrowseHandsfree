@@ -4,7 +4,7 @@
     Calibrator
     v-toolbar(app dense color='yellow' flat extended style='position: relative')
       v-toolbar-title
-        img.mr-2(src='@/assets/browsehandsfree-logo.png' height=30)
+        img.mr-2(src='static/img/browsehandsfree-logo.png' height=30)
         span.mr-2 BrowseHandsfree
         small v{{$version}}
       v-spacer

@@ -4,7 +4,7 @@
     Feed
     div(v-if='!isWebcamOn')
       p
-        img(src='@/assets/browsehandsfree-logo.png' alt='BrowseHandsfree' height=100)
+        img(src='static/img/browsehandsfree-logo.png' alt='BrowseHandsfree' height=100)
       p.text-xs-left Welcome to <b>BrowseHandsfree</b>, a platform that lets you browse the web hands-free (via face tracking)! To get started, lets first turn on your webcam.
     div.text-xs-center(v-if='loadingText')
       p {{loadingText}}
