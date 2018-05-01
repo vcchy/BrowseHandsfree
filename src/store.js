@@ -61,6 +61,9 @@ export default new Vuex.Store({
       framesSinceClicked: 0
     },
 
+    // Whether we have calibrated or not
+    isCalibrated: false,
+
     // Different gesture confidences
     gesture: {
       click: 0
@@ -72,6 +75,7 @@ export default new Vuex.Store({
     // Whether we are tracking faces or not
     isTracking: false,
 
+    // Whether the webcam is on or not
     isWebcamOn: false,
 
     // The last face object discovered

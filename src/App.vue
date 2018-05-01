@@ -1,6 +1,7 @@
 <template lang="pug">
   v-app
     Pointer
+    Calibrator
     v-toolbar(app dense color='yellow' flat extended style='position: relative')
       v-toolbar-title
         img.mr-2(src='@/assets/browsehandsfree-logo.png' height=30)
@@ -27,11 +28,13 @@
 <script>
   import Webcam from '@/components/Webcam'
   import Pointer from '@/components/Pointer'
+  import Calibrator from '@/components/Calibrator'
 
   export default {
     name: 'App',
 
     components: {
+      Calibrator,
       Pointer,
       Webcam
     },
