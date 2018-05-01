@@ -2,7 +2,7 @@
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
       canvas.flip-h(ref='feed')
-      v-btn(v-if='isWebcamOn && isTracking' color='primary' @click='recalibrate')
+      v-btn(v-if='isWebcamOn && isTracking && !isCalibrating' color='primary' @click='calibrate')
         v-icon.mr-2 gps_fixed
         | Calibrate
       v-btn(color='error' @click='stopFeed')
@@ -16,8 +16,9 @@ import { debounce } from 'lodash'
 
 export default {
   computed: mapState([
-    'isWebcamOn',
+    'isCalibrating',
     'isTracking',
+    'isWebcamOn',
     'lastFrame',
     'refs'
   ]),
@@ -59,7 +60,7 @@ export default {
     /**
      * Starts the recalibration process
      */
-    recalibrate () { console.log('recalibrate') }
+    calibrate () { this.$store.commit('set', ['isCalibrating', true]) }
   }
 }
 </script>

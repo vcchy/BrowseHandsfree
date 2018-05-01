@@ -1,5 +1,5 @@
 <template lang="pug">
-  #calibrator(ref='calibrator' :class='{hidden: !isTracking || (isTracking && isCalibrated)}' :style='style')
+  #calibrator(ref='calibrator' :class='{hidden: !isCalibrating}' :style='style')
 </template>
 
 <script>
@@ -8,27 +8,32 @@
   export default {
     data () {
       return {
+        // The calibrators left position
         left: 0,
-        top: 0
+
+        // The calibrators top position
+        top: 0,
+
+        // The calibrators size. This starts at 100 and shrinks
+        size: 100
       }
     },
 
     computed: {
       ...mapState([
         'cursor',
-        'isCalibrated',
-        'isTracking',
+        'isCalibrating',
         'settings'
       ]),
 
-      style () { return `left: ${this.left}px; top: ${this.top}px` }
+      style () { return `left: ${this.left}px; top: ${this.top}px; height: ${this.size}px; width: ${this.size}px;` }
     },
 
     watch: {
-      isTracking () {
-        if (this.isTracking && !this.isCalibrated) {
-          this.calibrate()
+      isCalibrating (isCalibrating) {
+        if (isCalibrating) {
           this.repositionCalibrator()
+          this.calibrate()
         }
       }
     },
@@ -43,9 +48,8 @@
        * Repositions the calibrator
        */
       repositionCalibrator () {
-        const $marker = this.$refs.calibrator
-        this.left = window.innerWidth / 2 - $marker.offsetWidth
-        this.top = window.innerHeight / 2 - $marker.offsetHeight
+        this.left = window.innerWidth / 2 - this.size / 2
+        this.top = window.innerHeight / 2 - this.size / 2
       },
 
       /**
@@ -54,32 +58,45 @@
       calibrate () {
         let isCalibrated = true
         let settings = Object.assign({}, this.settings)
-        let $marker = this.$refs.calibrator
 
-        if (this.cursor.position.left < this.left - $marker.offsetWidth / 2) {
+        // Set positions
+        if (this.isCursorToTheLeft()) {
           settings.offset.x = parseInt(settings.offset.x) + 10
           isCalibrated = false
         }
-
-        if (this.cursor.position.left > this.left + $marker.offsetWidth / 2) {
+        if (this.isCursorToTheRight()) {
           settings.offset.x = parseInt(settings.offset.x) - 10
           isCalibrated = false
         }
-
-        if (this.cursor.position.top < this.top - $marker.offsetHeight / 2) {
+        if (this.isCursorAbove()) {
           settings.offset.y = parseInt(settings.offset.y) + 10
           isCalibrated = false
         }
-
-        if (this.cursor.position.top > this.top + $marker.offsetHeight / 2) {
+        if (this.isCursorBelow()) {
           settings.offset.y = parseInt(settings.offset.y) - 10
           isCalibrated = false
         }
 
+        // Shrink calibrator
+        if (this.isCursorCentered() && this.size > 10) this.size -= 5
+        else if (!this.isCursorCentered() && this.size > 10) this.size = 100
+        this.repositionCalibrator()
+
+        if (this.size > 40) isCalibrated = false
         this.$store.commit('merge', ['settings', settings])
-        this.$store.commit('set', ['isCalibrated', isCalibrated])
-        if (!isCalibrated) { requestAnimationFrame(this.calibrate) }
-      }
+        this.$store.commit('set', ['isCalibrating', !isCalibrated])
+
+        if (!isCalibrated) requestAnimationFrame(this.calibrate)
+      },
+
+      /**
+       * Cursor position helpers
+       */
+      isCursorToTheLeft () { return this.cursor.position.left < this.left },
+      isCursorToTheRight () { return this.cursor.position.left > this.left + this.size },
+      isCursorAbove () { return this.cursor.position.top < this.top },
+      isCursorBelow () { return this.cursor.position.top > this.top + this.size },
+      isCursorCentered () { return !this.isCursorToTheRight() && !this.isCursorToTheLeft() && !this.isCursorAbove() && !this.isCursorBelow() }
     }
   }
 </script>

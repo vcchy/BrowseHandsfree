@@ -62,7 +62,7 @@ export default new Vuex.Store({
     },
 
     // Whether we have calibrated or not
-    isCalibrated: false,
+    isCalibrating: false,
 
     // Different gesture confidences
     gesture: {

@@ -14,8 +14,8 @@
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title Start Here
             v-spacer
-            v-tooltip(v-if='isWebcamOn && isTracking')
-              v-btn(icon @click='recalibrate' slot='activator')
+            v-tooltip(v-if='isWebcamOn && isTracking && !isCalibrating')
+              v-btn(icon @click='calibrate' slot='activator')
                 v-icon gps_fixed
               span Calibrate
             v-tooltip
@@ -44,6 +44,7 @@
     name: 'App',
 
     computed: mapState([
+      'isCalibrating',
       'isWebcamOn',
       'isTracking'
     ]),
@@ -99,7 +100,7 @@
       /**
        * Starts the recalibration process
        */
-      recalibrate () { console.log('recalibrate') }
+      calibrate () { this.$store.commit('set', ['isCalibrating', true]) }
     }
   }
 </script>
