@@ -22,8 +22,10 @@ import {
   VProgressCircular,
   transitions
 } from 'vuetify'
-import '../node_modules/vuetify/src/stylus/app.styl'
+import '~/node_modules/vuetify/src/stylus/app.styl'
 import '@/assets/styles/main.styl'
+import '~/node_modules/material-design-icons/iconfont/material-icons.css'
+import '~/node_modules/typeface-roboto/index.css'
 
 Vue.use(Vuetify, {
   components: {
