@@ -28,10 +28,7 @@ settings = merge({
 
   speed: {
     x: 1,
-    y: 1,
-    xLog: 1,
-    yLog: 1,
-    max: 10
+    y: 1
   }
 }, settings)
 
@@ -62,7 +59,11 @@ export default new Vuex.Store({
     },
 
     // Whether we have calibrated or not
-    hasCalibrated: false,
+    hasCalibrated: {
+      center: false,
+      horiz: false,
+      vert: false
+    },
 
     // Whether we are currently calibrating
     isCalibrating: false,

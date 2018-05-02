@@ -8,4 +8,15 @@ $calibratorSize = 50px
   border-radius: $calibratorSize
   position: fixed
   z-index: 999
-  transform-origin: center
+
+  &.horiz
+    left: 100%
+    top: 0
+    border-radius: 0
+    margin-top: 0 !important
+
+  &.vert
+    left: 0
+    top: 0
+    border-radius: 0
+    margin-left: 0
