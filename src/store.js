@@ -58,15 +58,11 @@ export default new Vuex.Store({
       framesSinceClicked: 0
     },
 
-    // Whether we have calibrated or not
-    hasCalibrated: {
-      center: false,
-      horiz: false,
-      vert: false
-    },
-
     // Whether we are currently calibrating
     isCalibrating: false,
+
+    // Whether we have calibrated or not
+    hasCalibrated: false,
 
     // Different gesture confidences
     gesture: {

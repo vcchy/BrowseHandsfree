@@ -1,17 +1,16 @@
 <template lang="pug">
-  #calibrator(ref='calibrator' :class='{hidden: !isCalibrating, horiz: mode === "horiz", vert: mode === "vert"}' :style='calibrationStyles')
+  #calibrator(ref='calibrator' :class='{hidden: !isCalibrating}' :style='calibrationStyles')
 </template>
 
 <script>
   import { mapState } from 'vuex'
+  import lockr from 'lockr'
 
   const CALIBRATION = {
     // The speed at which the calibrator decreases in size
     SPEED: 5,
     // The speed at which to change the offsets
-    CENTER_STEP: 10,
-    // The speed to adjust the move sensitivity
-    HORIZ_STEP: 0.05,
+    STEP: 10,
     // The calibration starting size
     START_SIZE: 100
   }
@@ -44,17 +43,7 @@
       /**
        * Sets the calibrators dimensions
        */
-      calibrationStyles () { return `height: ${this.size.height}px; width: ${this.size.width}px; margin-left: ${this.size.width / -2}px; margin-top: ${this.size.height / -2}px; left: ${this.left}px; top: ${this.top}px` },
-
-      /**
-       * Sets the calibration mode (center, horiz, vert)
-       * @return {[type]} [description]
-       */
-      mode () {
-        if (!this.hasCalibrated.center) return 'center'
-        if (!this.hasCalibrated.horiz) return 'horiz'
-        if (!this.hasCalibrated.vert) return 'vert'
-      }
+      calibrationStyles () { return `height: ${this.size.height}px; width: ${this.size.width}px; margin-left: ${this.size.width / -2}px; margin-top: ${this.size.height / -2}px; left: ${this.left}px; top: ${this.top}px` }
     },
 
     watch: {
@@ -77,15 +66,8 @@
        * Reposition the calibrator
        */
       repositionCalibrator () {
-        switch (this.mode) {
-          case 'center':
-            this.top = window.innerHeight / 2
-            this.left = window.innerWidth / 2
-            break
-          case 'horiz':
-            this.top = 0
-            this.left = window.innerWidth - this.size.width
-        }
+        this.top = window.innerHeight / 2
+        this.left = window.innerWidth / 2
       },
 
       /**
@@ -96,39 +78,20 @@
         let settings = Object.assign({}, this.settings)
 
         // Update calibration settings
-        switch (this.mode) {
-          case 'center':
-            if (this.isCursorToTheLeft()) settings.offset.x = parseInt(settings.offset.x) + CALIBRATION.CENTER_STEP
-            if (this.isCursorToTheRight()) settings.offset.x = parseInt(settings.offset.x) - CALIBRATION.CENTER_STEP
-            if (this.isCursorAbove()) settings.offset.y = parseInt(settings.offset.y) + CALIBRATION.CENTER_STEP
-            if (this.isCursorBelow()) settings.offset.y = parseInt(settings.offset.y) - CALIBRATION.CENTER_STEP
-            break
-
-          case 'horiz':
-            if (this.isCursorToTheLeft()) settings.speed.x = settings.speed.x + CALIBRATION.HORIZ_STEP
-            else if (this.isCursorToTheRight()) settings.speed.x = Math.max(0.05, parseInt(settings.speed.x) - CALIBRATION.HORIZ_STEP)
-            break
-        }
+        if (this.isCursorToTheLeft()) settings.offset.x = parseInt(settings.offset.x) + CALIBRATION.STEP
+        if (this.isCursorToTheRight()) settings.offset.x = parseInt(settings.offset.x) - CALIBRATION.STEP
+        if (this.isCursorAbove()) settings.offset.y = parseInt(settings.offset.y) + CALIBRATION.STEP
+        if (this.isCursorBelow()) settings.offset.y = parseInt(settings.offset.y) - CALIBRATION.STEP
         this.$store.commit('set', ['settings', settings])
 
         // Maybe calibrate and repeat
         this.maybeShrinkCalibrator()
-        isCalibrated = this.checkCalibration()
-        this.updateCalibrationMode(isCalibrated)
-        if (!isCalibrated) requestAnimationFrame(this.calibrate)
-      },
+        isCalibrated = !(this.size.width > CALIBRATION.STEP * 4)
+        this.$store.commit('set', ['isCalibrating', !isCalibrated])
+        this.$store.commit('set', ['hasCalibrated', isCalibrated])
 
-      /**
-       * Checks whether the calibration is complete calibration
-       * @returns {BOL} whether we have finished calibration or not
-       */
-      checkCalibration () {
-        switch (this.mode) {
-          case 'center':
-          case 'horiz':
-            if (this.size.width > CALIBRATION.CENTER_STEP * 4) return false
-            else return true
-        }
+        if (isCalibrated) lockr.set('settings', this.settings)
+        else requestAnimationFrame(this.calibrate)
       },
 
       /**
@@ -154,62 +117,22 @@
       isCursorCentered (withBounds) { return !this.isCursorToTheRight(withBounds) && !this.isCursorToTheLeft(withBounds) && !this.isCursorAbove(withBounds) && !this.isCursorBelow(withBounds) },
 
       /**
-       * Updates the calibration mode (center, horiz, vert)
-       * @param  {BOL} isCalibrated Whether we're calibrated or not
-       */
-      updateCalibrationMode (isCalibrated) {
-        if (isCalibrated) {
-          let hasCalibrated = this.hasCalibrated
-          hasCalibrated[this.mode] = true
-          this.$store.commit('set', ['hasCalibrated', hasCalibrated])
-          this.$store.commit('set', ['isCalibrating', new Date()])
-          this.repositionCalibrator()
-        } else this.$store.commit('set', ['isCalibrating', true])
-      },
-
-      /**
        * Maybe shrinks the calibrator as it's being calibrated
        */
       maybeShrinkCalibrator () {
         // Shrink
         if (this.isCursorCentered(true)) {
-          switch (this.mode) {
-            case 'center':
-              if (this.size.width > CALIBRATION.CENTER_STEP) {
-                this.size.width -= CALIBRATION.SPEED
-                this.size.height -= CALIBRATION.SPEED
-              } else {
-                this.size.width = CALIBRATION.START_SIZE
-                this.size.height = CALIBRATION.START_SIZE
-              }
-              break
-
-            case 'horiz':
-              if (this.size.width > CALIBRATION.CENTER_STEP) {
-                this.size.width -= CALIBRATION.SPEED
-              } else {
-                this.size.width = CALIBRATION.START_SIZE
-                this.size.height = window.innerHeight
-              }
-              break
+          if (this.size.width > CALIBRATION.STEP) {
+            this.size.width -= CALIBRATION.SPEED
+            this.size.height -= CALIBRATION.SPEED
+          } else {
+            this.size.width = CALIBRATION.START_SIZE
+            this.size.height = CALIBRATION.START_SIZE
           }
-
         // Reset
-        } else if (!this.isCursorCentered(true)) {
-          switch (this.mode) {
-            case 'center':
-              if (this.size.width > CALIBRATION.CENTER_STEP) {
-                this.size.width = CALIBRATION.START_SIZE
-                this.size.height = CALIBRATION.START_SIZE
-              }
-              break
-            case 'horiz':
-              if (this.size.width > CALIBRATION.CENTER_STEP) {
-                this.size.width = CALIBRATION.START_SIZE
-                this.size.height = window.innerHeight
-              }
-              break
-          }
+        } else if (this.size.width > CALIBRATION.STEP) {
+          this.size.width = CALIBRATION.START_SIZE
+          this.size.height = CALIBRATION.START_SIZE
         }
       }
     }
