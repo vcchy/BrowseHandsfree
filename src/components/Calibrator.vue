@@ -83,6 +83,7 @@
         this.repositionCalibrator()
 
         if (this.size > 40) isCalibrated = false
+        if (isCalibrated) this.$store.commit('set', ['hasCalibrated', true])
         this.$store.commit('merge', ['settings', settings])
         this.$store.commit('set', ['isCalibrating', !isCalibrated])
 

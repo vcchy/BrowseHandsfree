@@ -8,6 +8,7 @@ import store from './store.js'
 import {
   Vuetify,
   VApp,
+  VAlert,
   VBtn,
   VCard,
   VDivider,
@@ -27,6 +28,7 @@ import '@/assets/styles/main.styl'
 Vue.use(Vuetify, {
   components: {
     VApp,
+    VAlert,
     VBtn,
     VCard,
     VDivider,

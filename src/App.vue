@@ -26,8 +26,14 @@
             v-btn(icon @click='toggleMainPanelVisibility')
               v-icon menu
           v-divider
-          Webcam
 
+          Webcam
+            div(v-if='isWebcamOn && isTracking && !hasCalibrated')
+              h1 Let's Calibrate!
+              p Imagine a line extending straight out from between your eyes and onto the screen. The dot is placed where this imaginary line meets your screen. To move the dot simply turn, tilt, and move your head around. Give it a try!
+              p Once you're comfortable with how it works, point your head towards the center of your screen and click the calibrate button below. Don't move your head while the cursor calibrates - the goal is to have the cursor reach the center of your screen on it's own.
+              v-alert(type="info" :value='true')
+                |<b>Hint:</b> To scroll the page, move the cursor below or above your screen!
     v-content
       router-view
     v-footer(app)
@@ -44,6 +50,7 @@
     name: 'App',
 
     computed: mapState([
+      'hasCalibrated',
       'isCalibrating',
       'isWebcamOn',
       'isTracking'

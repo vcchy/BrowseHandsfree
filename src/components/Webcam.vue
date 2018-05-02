@@ -1,6 +1,8 @@
 <template lang="pug">
   v-card-text(:class='{hidden: !isMainPanelVisible}').text-xs-center
     video.hidden(ref='webcam' playsinline)
+    div.text-xs-left
+      slot
     Feed
     div(v-if='!isWebcamOn')
       p
