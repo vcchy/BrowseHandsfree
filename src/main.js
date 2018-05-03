@@ -8,6 +8,7 @@ import store from './store.js'
 import {
   Vuetify,
   VApp,
+  VAlert,
   VBtn,
   VCard,
   VDivider,
@@ -15,18 +16,23 @@ import {
   VGrid,
   VIcon,
   VList,
-  VToolbar,
-  VTooltip,
   VNavigationDrawer,
   VProgressCircular,
+  VSlider,
+  VTextField,
+  VToolbar,
+  VTooltip,
   transitions
 } from 'vuetify'
-import '../node_modules/vuetify/src/stylus/app.styl'
+import '~/node_modules/vuetify/src/stylus/app.styl'
 import '@/assets/styles/main.styl'
+import '~/node_modules/material-design-icons/iconfont/material-icons.css'
+import '~/node_modules/typeface-roboto/index.css'
 
 Vue.use(Vuetify, {
   components: {
     VApp,
+    VAlert,
     VBtn,
     VCard,
     VDivider,
@@ -35,9 +41,11 @@ Vue.use(Vuetify, {
     VIcon,
     VList,
     VNavigationDrawer,
+    VProgressCircular,
+    VSlider,
+    VTextField,
     VToolbar,
     VTooltip,
-    VProgressCircular,
     transitions
   },
 

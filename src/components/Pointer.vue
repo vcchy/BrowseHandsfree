@@ -54,8 +54,8 @@
         let left = -face.translationX * ratio.width + $feed.width + parseInt(this.settings.offset.x) - this.settings.cursor.size / 2
         let top = face.translationY * ratio.height + parseInt(this.settings.offset.y) - this.settings.cursor.size / 2
 
-        left += Math.sin(face.rotationY) * (this.settings.speed.xLog * window.innerWidth) + $feed.offsetLeft
-        top += Math.sin(face.rotationX) * (this.settings.speed.yLog * window.innerHeight)
+        left += Math.sin(face.rotationY) * (this.settings.speed.x * window.innerWidth) + $feed.offsetLeft
+        top += Math.sin(face.rotationX) * (this.settings.speed.y * window.innerHeight)
 
         this.refs.pointer.style = `left: ${left}px; top: ${top}px; width: ${this.settings.cursor.size}px; height: ${this.settings.cursor.size}px; border-radius: ${this.settings.cursor.size}px; background: ${this.color}`
         this.$store.commit('merge', ['cursor', {position: {left, top}}])
@@ -170,8 +170,8 @@
           scrollBy.x = this.cursor.position.left - window.innerWidth
         }
 
-        scrollBy.x *= this.settings.cursor.scroll.sensitivityLog
-        scrollBy.y *= this.settings.cursor.scroll.sensitivityLog
+        scrollBy.x *= this.settings.scroll.sensitivity
+        scrollBy.y *= this.settings.scroll.sensitivity
         scrollBy && window.scrollBy(scrollBy.x, scrollBy.y)
       },
 

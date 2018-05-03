@@ -12,10 +12,6 @@ settings = merge({
     click: {
       sensitivity: 0.8
     },
-    scroll: {
-      sensitivity: 1,
-      sensitivityLog: 1
-    },
 
     // Number of frames a click is active for
     clickFrameBuffer: 1
@@ -26,12 +22,13 @@ settings = merge({
     y: 0
   },
 
+  scroll: {
+    sensitivity: 0.8
+  },
+
   speed: {
     x: 1,
-    y: 1,
-    xLog: 1,
-    yLog: 1,
-    max: 10
+    y: 1
   }
 }, settings)
 
@@ -61,8 +58,11 @@ export default new Vuex.Store({
       framesSinceClicked: 0
     },
 
-    // Whether we have calibrated or not
+    // Whether we are currently calibrating
     isCalibrating: false,
+
+    // Whether we have calibrated or not
+    hasCalibrated: false,
 
     // Different gesture confidences
     gesture: {
@@ -87,6 +87,9 @@ export default new Vuex.Store({
 
     // Loading text (or null)
     loadingText: null,
+
+    // The title used on the main panel
+    mainPanelTitle: 'Start Here',
 
     // App-wide refs
     refs: {

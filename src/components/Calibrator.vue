@@ -1,9 +1,19 @@
 <template lang="pug">
-  #calibrator(ref='calibrator' :class='{hidden: !isCalibrating}' :style='style')
+  #calibrator(ref='calibrator' :class='{hidden: !isCalibrating}' :style='calibrationStyles')
 </template>
 
 <script>
   import { mapState } from 'vuex'
+  import lockr from 'lockr'
+
+  const CALIBRATION = {
+    // The speed at which the calibrator decreases in size
+    SPEED: 5,
+    // The speed at which to change the offsets
+    STEP: 10,
+    // The calibration starting size
+    START_SIZE: 100
+  }
 
   export default {
     data () {
@@ -15,7 +25,10 @@
         top: 0,
 
         // The calibrators size. This starts at 100 and shrinks
-        size: 100
+        size: {
+          width: 100,
+          height: 100
+        }
       }
     },
 
@@ -23,80 +36,112 @@
       ...mapState([
         'cursor',
         'isCalibrating',
+        'hasCalibrated',
         'settings'
       ]),
 
-      style () { return `left: ${this.left}px; top: ${this.top}px; height: ${this.size}px; width: ${this.size}px;` }
+      /**
+       * Sets the calibrators dimensions
+       */
+      calibrationStyles () { return `height: ${this.size.height}px; width: ${this.size.width}px; margin-left: ${this.size.width / -2}px; margin-top: ${this.size.height / -2}px; left: ${this.left}px; top: ${this.top}px` }
     },
 
     watch: {
       isCalibrating (isCalibrating) {
         if (isCalibrating) {
-          this.repositionCalibrator()
+          this.size.width = CALIBRATION.START_SIZE
+          this.size.height = CALIBRATION.START_SIZE
           this.calibrate()
+          this.$nextTick(this.repositionCalibrator)
+          this.$store.commit('set', ['mainPanelTitle', 'Calibrating...'])
         }
       }
     },
 
     mounted () {
+      window.removeEventListener('resize', this.repositionCalibrator)
       window.addEventListener('resize', this.repositionCalibrator)
       this.repositionCalibrator()
     },
 
     methods: {
       /**
-       * Repositions the calibrator
+       * Reposition the calibrator
        */
       repositionCalibrator () {
-        this.left = window.innerWidth / 2 - this.size / 2
-        this.top = window.innerHeight / 2 - this.size / 2
+        this.top = window.innerHeight / 2
+        this.left = window.innerWidth / 2
       },
 
       /**
        * Starts calibrating the cursor, bringing it in closer to the calibrator
        */
       calibrate () {
-        let isCalibrated = true
+        let isCalibrated
         let settings = Object.assign({}, this.settings)
 
-        // Set positions
-        if (this.isCursorToTheLeft()) {
-          settings.offset.x = parseInt(settings.offset.x) + 10
-          isCalibrated = false
-        }
-        if (this.isCursorToTheRight()) {
-          settings.offset.x = parseInt(settings.offset.x) - 10
-          isCalibrated = false
-        }
-        if (this.isCursorAbove()) {
-          settings.offset.y = parseInt(settings.offset.y) + 10
-          isCalibrated = false
-        }
-        if (this.isCursorBelow()) {
-          settings.offset.y = parseInt(settings.offset.y) - 10
-          isCalibrated = false
-        }
+        // Update calibration settings
+        if (this.isCursorToTheLeft()) settings.offset.x = parseInt(settings.offset.x) + CALIBRATION.STEP
+        if (this.isCursorToTheRight()) settings.offset.x = parseInt(settings.offset.x) - CALIBRATION.STEP
+        if (this.isCursorAbove()) settings.offset.y = parseInt(settings.offset.y) + CALIBRATION.STEP
+        if (this.isCursorBelow()) settings.offset.y = parseInt(settings.offset.y) - CALIBRATION.STEP
+        this.$store.commit('set', ['settings', settings])
 
-        // Shrink calibrator
-        if (this.isCursorCentered() && this.size > 10) this.size -= 5
-        else if (!this.isCursorCentered() && this.size > 10) this.size = 100
-        this.repositionCalibrator()
-
-        if (this.size > 40) isCalibrated = false
-        this.$store.commit('merge', ['settings', settings])
+        // Maybe calibrate and repeat
+        this.maybeShrinkCalibrator()
+        isCalibrated = !(this.size.width > CALIBRATION.STEP * 4)
         this.$store.commit('set', ['isCalibrating', !isCalibrated])
+        isCalibrated && this.$store.commit('set', ['hasCalibrated', isCalibrated])
 
-        if (!isCalibrated) requestAnimationFrame(this.calibrate)
+        if (isCalibrated) {
+          lockr.set('settings', this.settings)
+          this.$store.commit('set', ['mainPanelTitle', 'Settings'])
+        } else {
+          requestAnimationFrame(this.calibrate)
+        }
       },
 
       /**
        * Cursor position helpers
+       * @param {BOL} withBounds Whether to look for the dead center (false) or the elements bounding box (true)
        */
-      isCursorToTheLeft () { return this.cursor.position.left < this.left },
-      isCursorToTheRight () { return this.cursor.position.left > this.left + this.size },
-      isCursorAbove () { return this.cursor.position.top < this.top },
-      isCursorBelow () { return this.cursor.position.top > this.top + this.size },
-      isCursorCentered () { return !this.isCursorToTheRight() && !this.isCursorToTheLeft() && !this.isCursorAbove() && !this.isCursorBelow() }
+      isCursorToTheLeft (withBounds) {
+        const adjust = withBounds ? this.size.width / 2 : 0
+        return this.cursor.position.left < this.left - adjust
+      },
+      isCursorToTheRight (withBounds) {
+        const adjust = withBounds ? this.size.width / 2 : 0
+        return this.cursor.position.left > this.left + adjust
+      },
+      isCursorAbove (withBounds) {
+        const adjust = withBounds ? this.size.height / 2 : 0
+        return this.cursor.position.top < this.top - adjust
+      },
+      isCursorBelow (withBounds) {
+        const adjust = withBounds ? this.size.height / 2 : 0
+        return this.cursor.position.top > this.top + adjust
+      },
+      isCursorCentered (withBounds) { return !this.isCursorToTheRight(withBounds) && !this.isCursorToTheLeft(withBounds) && !this.isCursorAbove(withBounds) && !this.isCursorBelow(withBounds) },
+
+      /**
+       * Maybe shrinks the calibrator as it's being calibrated
+       */
+      maybeShrinkCalibrator () {
+        // Shrink
+        if (this.isCursorCentered(true)) {
+          if (this.size.width > CALIBRATION.STEP) {
+            this.size.width -= CALIBRATION.SPEED
+            this.size.height -= CALIBRATION.SPEED
+          } else {
+            this.size.width = CALIBRATION.START_SIZE
+            this.size.height = CALIBRATION.START_SIZE
+          }
+        // Reset
+        } else if (this.size.width > CALIBRATION.STEP) {
+          this.size.width = CALIBRATION.START_SIZE
+          this.size.height = CALIBRATION.START_SIZE
+        }
+      }
     }
   }
 </script>

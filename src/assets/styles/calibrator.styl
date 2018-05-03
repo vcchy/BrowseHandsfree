@@ -6,6 +6,17 @@ $calibratorSize = 50px
   background: rgba(255, 0, 0, 0.5)
   border: 2px solid rgba(100, 0, 0, 0.8)
   border-radius: $calibratorSize
-  position: absolute
+  position: fixed
   z-index: 999
-  transform-origin: center
+
+  &.horiz
+    left: 100%
+    top: 0
+    border-radius: 0
+    margin-top: 0 !important
+
+  &.vert
+    left: 0
+    top: 0
+    border-radius: 0
+    margin-left: 0

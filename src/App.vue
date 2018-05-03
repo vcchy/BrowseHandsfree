@@ -9,12 +9,12 @@
         small v{{$version}}
       v-spacer
     v-layout(row pb-2)
-      v-flex.relative(xs8 offset-xs2 md6 offset-md3)
+      v-flex.relative(xs10 offset-xs1 md6 offset-md3)
         v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
-            v-toolbar-title Start Here
+            v-toolbar-title {{mainPanelTitle}}
             v-spacer
-            v-tooltip(v-if='isWebcamOn && isTracking && !isCalibrating')
+            v-tooltip(v-if='isWebcamOn && isTracking')
               v-btn(icon @click='calibrate' slot='activator')
                 v-icon gps_fixed
               span Calibrate
@@ -26,7 +26,10 @@
             v-btn(icon @click='toggleMainPanelVisibility')
               v-icon menu
           v-divider
+
           Webcam
+            CalibrationInstructions(v-if='isWebcamOn && isTracking && !hasCalibrated')
+            Settings(v-if='isWebcamOn && isTracking && hasCalibrated')
 
     v-content
       router-view
@@ -38,20 +41,26 @@
   import Webcam from '@/components/Webcam'
   import Pointer from '@/components/Pointer'
   import Calibrator from '@/components/Calibrator'
+  import CalibrationInstructions from '@/components/CalibrationInstructions'
+  import Settings from '@/components/Settings'
   import { mapState } from 'vuex'
 
   export default {
     name: 'App',
 
     computed: mapState([
+      'hasCalibrated',
       'isCalibrating',
       'isWebcamOn',
-      'isTracking'
+      'isTracking',
+      'mainPanelTitle'
     ]),
 
     components: {
       Calibrator,
+      CalibrationInstructions,
       Pointer,
+      Settings,
       Webcam
     },
 
