@@ -88,6 +88,9 @@ export default new Vuex.Store({
     // Loading text (or null)
     loadingText: null,
 
+    // The title used on the main panel
+    mainPanelTitle: 'Start Here',
+
     // App-wide refs
     refs: {
       webcam: null,

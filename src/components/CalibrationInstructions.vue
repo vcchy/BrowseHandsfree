@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if='isWebcamOn && isTracking && !hasCalibrated')
+  div
     h1 Let's Calibrate Your Center!
     p Imagine a line extending straight out from between your eyes and onto the screen. The dot is placed where this imaginary line meets your screen. To move the dot simply turn, tilt, and move your head around. Give it a try!
     p
@@ -17,6 +17,8 @@
       'hasCalibrated',
       'isTracking',
       'isWebcamOn'
-    ])
+    ]),
+
+    mounted () { this.$store.commit('set', ['mainPanelTitle', 'Calibrate']) }
   }
 </script>

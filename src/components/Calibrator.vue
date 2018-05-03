@@ -49,8 +49,11 @@
     watch: {
       isCalibrating (isCalibrating) {
         if (isCalibrating) {
+          this.size.width = CALIBRATION.START_SIZE
+          this.size.height = CALIBRATION.START_SIZE
           this.calibrate()
           this.$nextTick(this.repositionCalibrator)
+          this.$store.commit('set', ['mainPanelTitle', 'Calibrating...'])
         }
       }
     },
@@ -88,10 +91,14 @@
         this.maybeShrinkCalibrator()
         isCalibrated = !(this.size.width > CALIBRATION.STEP * 4)
         this.$store.commit('set', ['isCalibrating', !isCalibrated])
-        this.$store.commit('set', ['hasCalibrated', isCalibrated])
+        isCalibrated && this.$store.commit('set', ['hasCalibrated', isCalibrated])
 
-        if (isCalibrated) lockr.set('settings', this.settings)
-        else requestAnimationFrame(this.calibrate)
+        if (isCalibrated) {
+          lockr.set('settings', this.settings)
+          this.$store.commit('set', ['mainPanelTitle', 'Settings'])
+        } else {
+          requestAnimationFrame(this.calibrate)
+        }
       },
 
       /**
@@ -107,11 +114,11 @@
         return this.cursor.position.left > this.left + adjust
       },
       isCursorAbove (withBounds) {
-        const adjust = withBounds ? this.size / 2 : 0
+        const adjust = withBounds ? this.size.height / 2 : 0
         return this.cursor.position.top < this.top - adjust
       },
       isCursorBelow (withBounds) {
-        const adjust = withBounds ? this.size / 2 : 0
+        const adjust = withBounds ? this.size.height / 2 : 0
         return this.cursor.position.top > this.top + adjust
       },
       isCursorCentered (withBounds) { return !this.isCursorToTheRight(withBounds) && !this.isCursorToTheLeft(withBounds) && !this.isCursorAbove(withBounds) && !this.isCursorBelow(withBounds) },

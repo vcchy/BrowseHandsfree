@@ -12,9 +12,9 @@
       v-flex.relative(xs8 offset-xs2 md6 offset-md3)
         v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
-            v-toolbar-title Start Here
+            v-toolbar-title {{mainPanelTitle}}
             v-spacer
-            v-tooltip(v-if='isWebcamOn && isTracking && !isCalibrating')
+            v-tooltip(v-if='isWebcamOn && isTracking')
               v-btn(icon @click='calibrate' slot='activator')
                 v-icon gps_fixed
               span Calibrate
@@ -28,7 +28,7 @@
           v-divider
 
           Webcam
-            CalibrationInstructions
+            CalibrationInstructions(v-if='isWebcamOn && isTracking && !hasCalibrated')
 
     v-content
       router-view
@@ -47,9 +47,11 @@
     name: 'App',
 
     computed: mapState([
+      'hasCalibrated',
       'isCalibrating',
       'isWebcamOn',
-      'isTracking'
+      'isTracking',
+      'mainPanelTitle'
     ]),
 
     components: {

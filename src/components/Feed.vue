@@ -2,7 +2,7 @@
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
       canvas.flip-h(ref='feed')
-      v-btn(v-if='isWebcamOn && isTracking && !isCalibrating' color='primary' @click='calibrate')
+      v-btn(v-if='isWebcamOn && isTracking' color='primary' @click='calibrate')
         v-icon.mr-2 gps_fixed
         | Calibrate
       v-btn(color='error' @click='stopFeed')
