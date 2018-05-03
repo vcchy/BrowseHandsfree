@@ -9,7 +9,7 @@
         small v{{$version}}
       v-spacer
     v-layout(row pb-2)
-      v-flex.relative(xs8 offset-xs2 md6 offset-md3)
+      v-flex.relative(xs10 offset-xs1 md6 offset-md3)
         v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title {{mainPanelTitle}}

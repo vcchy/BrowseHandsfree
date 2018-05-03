@@ -170,8 +170,8 @@
           scrollBy.x = this.cursor.position.left - window.innerWidth
         }
 
-        scrollBy.x *= this.settings.cursor.scroll.sensitivityLog
-        scrollBy.y *= this.settings.cursor.scroll.sensitivityLog
+        scrollBy.x *= this.settings.scroll.sensitivity
+        scrollBy.y *= this.settings.scroll.sensitivity
         scrollBy && window.scrollBy(scrollBy.x, scrollBy.y)
       },
 

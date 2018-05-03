@@ -16,10 +16,12 @@ import {
   VGrid,
   VIcon,
   VList,
-  VToolbar,
-  VTooltip,
   VNavigationDrawer,
   VProgressCircular,
+  VSlider,
+  VTextField,
+  VToolbar,
+  VTooltip,
   transitions
 } from 'vuetify'
 import '~/node_modules/vuetify/src/stylus/app.styl'
@@ -39,9 +41,11 @@ Vue.use(Vuetify, {
     VIcon,
     VList,
     VNavigationDrawer,
+    VProgressCircular,
+    VSlider,
+    VTextField,
     VToolbar,
     VTooltip,
-    VProgressCircular,
     transitions
   },
 

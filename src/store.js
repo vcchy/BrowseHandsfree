@@ -12,10 +12,6 @@ settings = merge({
     click: {
       sensitivity: 0.8
     },
-    scroll: {
-      sensitivity: 1,
-      sensitivityLog: 1
-    },
 
     // Number of frames a click is active for
     clickFrameBuffer: 1
@@ -24,6 +20,10 @@ settings = merge({
   offset: {
     x: 0,
     y: 0
+  },
+
+  scroll: {
+    sensitivity: 0.8
   },
 
   speed: {
