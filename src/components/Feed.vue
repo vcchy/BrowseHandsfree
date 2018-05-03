@@ -16,7 +16,7 @@ import { debounce } from 'lodash'
 
 export default {
   computed: mapState([
-    'isCalibrating',
+    'hasCalibrated',
     'isTracking',
     'isWebcamOn',
     'lastFrame',
@@ -24,12 +24,17 @@ export default {
   ]),
 
   watch: {
-    lastFrame () { if (this.refs.webcam && this.refs.feed) this.refs.feed.getContext('2d').drawImage(this.refs.webcam, 0, 0, this.refs.feed.width, this.refs.feed.height) }
+    // Draw the webcam frame
+    lastFrame () { this.refs.webcam && this.refs.feed && this.refs.feed.getContext('2d').drawImage(this.refs.webcam, 0, 0, this.refs.feed.width, this.refs.feed.height) },
+
+    // Revert the title to "Start Here"
+    isWebcamOn () { !this.isWebcamOn && this.isTracking && this.hasCalibrated && this.$store.commit('set', ['mainPanelTitle', 'Start Here']) }
   },
 
   mounted () {
     this.$store.commit('merge', ['refs', {feed: this.$refs.feed}])
     this.resizeFeed()
+    window.removeEventListener('resize', this.resizeFeed)
     window.addEventListener('resize', this.resizeFeed)
   },
 

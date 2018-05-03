@@ -29,6 +29,7 @@
 
           Webcam
             CalibrationInstructions(v-if='isWebcamOn && isTracking && !hasCalibrated')
+            Settings(v-if='isWebcamOn && isTracking && hasCalibrated')
 
     v-content
       router-view
@@ -41,6 +42,7 @@
   import Pointer from '@/components/Pointer'
   import Calibrator from '@/components/Calibrator'
   import CalibrationInstructions from '@/components/CalibrationInstructions'
+  import Settings from '@/components/Settings'
   import { mapState } from 'vuex'
 
   export default {
@@ -58,6 +60,7 @@
       Calibrator,
       CalibrationInstructions,
       Pointer,
+      Settings,
       Webcam
     },
 
