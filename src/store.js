@@ -151,13 +151,13 @@ export default new Vuex.Store({
       if (state.cursor.clicked && state.cursor.isDown && state.cursor.framesSinceClicked > state.settings.cursor.clickFrameBuffer) { state.cursor.clicked = false }
 
       // Just Clicked
-      if (state.gesture.smile === 1 && !state.cursor.isDown && !state.cursor.clicked) {
+      if (state.gesture.click === 1 && !state.cursor.isDown && !state.cursor.clicked) {
         state.cursor.isDown = true
         state.cursor.clicked = true
         state.cursor.framesSinceClicked = 0
       }
 
-      if (state.gesture.smile !== 1) {
+      if (state.gesture.click !== 1) {
         state.cursor.isDown = false
         state.cursor.clicked = false
       }
