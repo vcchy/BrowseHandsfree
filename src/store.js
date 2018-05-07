@@ -20,7 +20,7 @@ settings = merge({
   },
 
   click: {
-    sensitivity: 0
+    sensitivity: 1.46
   },
 
   scroll: {
