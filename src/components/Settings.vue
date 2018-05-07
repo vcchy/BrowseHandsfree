@@ -1,7 +1,8 @@
 <template lang="pug">
   v-container(fluid)
-    v-layout
+    v-layout(row wrap)
       p The <v-icon>gps_fixed</v-icon> Calibrator will adjust the offsets for you, but you can adjust any other variable below! You can close this menu with the <v-icon>menu</v-icon> menu icon above and draw anywhere on the page to test your settings!
+      v-alert(type='info' :value='true') <b>Note:</b> These settings must be changed using a physical mouse or keyboard.
 
     v-layout(row wrap)
       v-flex(xs2 sm1)
