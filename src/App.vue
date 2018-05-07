@@ -41,8 +41,8 @@
 
     v-content
       router-view
-    v-footer(app)
-      span &copy; 2017
+    v-footer.text-xs-center(app)
+      span &copy; 2017. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
 </template>
 
 <script>
@@ -85,6 +85,9 @@
     },
 
     mounted () {
+      // Set the chrome background page
+      if (window.chrome && window.chrome.extension) this.$store.commit('set', ['chromeBgPage', window.chrome.extension.getBackgroundPage()])
+
       console.log(`                _.-'-'--.
                ,', ~'\` ( .'\`.
               ( ~'_ , .'(  >-)
