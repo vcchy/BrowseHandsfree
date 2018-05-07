@@ -34,9 +34,10 @@ export default {
   mounted () {
     this.$store.commit('merge', ['refs', {feed: this.$refs.feed}])
     this.resizeFeed()
-    window.removeEventListener('resize', this.resizeFeed)
     window.addEventListener('resize', this.resizeFeed)
   },
+
+  destroyed () { window.removeEventListener('resize', this.resizeFeed) },
 
   methods: {
     stopFeed () {

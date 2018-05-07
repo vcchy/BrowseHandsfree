@@ -32,13 +32,13 @@
     },
 
     mounted () {
+      // nextTick to allow for the canvas to reszie
       this.$nextTick(() => {
         const $canvas = this.$refs.canvas
         const bounds = $canvas.getBoundingClientRect()
 
         // Resize canvas
         paper.setup(this.$refs.canvas)
-        window.removeEventListener('resize', this.resizeCanvas)
         window.addEventListener('resize', this.resizeCanvas)
         this.resizeCanvas()
 
@@ -46,13 +46,14 @@
       })
     },
 
+    destroyed () { window.removeEventListener('resize', this.resizeCanvas) },
+
     methods: {
       /**
        * Resizes the canvas
        */
       resizeCanvas: debounce(function () {
         const $canvas = this.$refs.canvas
-        if (!$canvas) return
 
         $canvas.width = $canvas.parentElement.clientWidth
         $canvas.height = $canvas.parentElement.clientHeight

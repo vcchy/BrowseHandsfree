@@ -59,10 +59,11 @@
     },
 
     mounted () {
-      window.removeEventListener('resize', this.repositionCalibrator)
       window.addEventListener('resize', this.repositionCalibrator)
       this.repositionCalibrator()
     },
+
+    destroyed () { window.removeEventListener('resize', this.repositionCalibrator) },
 
     methods: {
       /**

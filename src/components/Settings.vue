@@ -49,10 +49,11 @@
     mounted () {
       this.isWebcamOn && this.isTracking && this.hasCalibrated && this.$store.commit('set', ['mainPanelTitle', 'Settings'])
 
-      window.removeEventListener('resize', this.updateSettingBounds)
       window.addEventListener('resize', this.updateSettingBounds)
       this.updateSettingBounds()
     },
+
+    destroyed () { window.removeEventListener('resize', this.updateSettingBounds) },
 
     data () {
       return {
