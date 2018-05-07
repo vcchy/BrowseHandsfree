@@ -1,8 +1,14 @@
 <template lang="pug">
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
-      canvas.flip-h(ref='feed')
-      v-btn(v-if='isWebcamOn && isTracking' color='primary' @click='calibrate')
+      canvas.flip-h(ref='feed' :class='{hidden: isFeedVisible}')
+      v-btn(v-if='isFeedVisible' color='info' @click='toggleFeed')
+        v-icon.mr-2 visibility
+        | Show Feed
+      v-btn(v-else color='info' @click='toggleFeed')
+        v-icon.mr-2 visibility_off
+        | Hide Feed
+      v-btn(v-if='isTracking' color='primary' @click='calibrate')
         v-icon.mr-2 gps_fixed
         | Calibrate
       v-btn(color='error' @click='stopFeed')
@@ -19,6 +25,7 @@ export default {
     'hasCalibrated',
     'isTracking',
     'isWebcamOn',
+    'isFeedVisible',
     'lastFrame',
     'refs'
   ]),
@@ -74,7 +81,9 @@ export default {
     /**
      * Starts the recalibration process
      */
-    calibrate () { this.$store.commit('set', ['isCalibrating', true]) }
+    calibrate () { this.$store.commit('set', ['isCalibrating', true]) },
+
+    toggleFeed () { this.$store.commit('flip', 'isFeedVisible') }
   }
 }
 </script>

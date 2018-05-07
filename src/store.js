@@ -79,6 +79,9 @@ export default new Vuex.Store({
     // Whether the webcam is on or not
     isWebcamOn: false,
 
+    // Whehter the feed itself is visible
+    isFeedVisible: false,
+
     // The last face object discovered
     // There are listeners on this object (@see Pointer.vue)
     lastFace: null,

@@ -14,6 +14,14 @@
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title {{mainPanelTitle}}
             v-spacer
+            v-tooltip(v-if='isWebcamOn && isTracking && !isFeedVisible')
+              v-btn(icon @click='toggleFeed' slot='activator')
+                v-icon visibility_off
+              span Hide Feed
+            v-tooltip(v-if='isWebcamOn && isTracking && isFeedVisible')
+              v-btn(icon @click='toggleFeed' slot='activator')
+                v-icon visibility
+              span Show Feed
             v-tooltip(v-if='isWebcamOn && isTracking')
               v-btn(icon @click='calibrate' slot='activator')
                 v-icon gps_fixed
@@ -52,6 +60,7 @@
     computed: mapState([
       'hasCalibrated',
       'isCalibrating',
+      'isFeedVisible',
       'isWebcamOn',
       'isTracking',
       'mainPanelTitle'
@@ -105,8 +114,8 @@
 
     methods: {
       toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') },
-
       toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') },
+      toggleFeed () { this.$store.commit('flip', 'isFeedVisible') },
 
       /**
        * Starts the recalibration process
