@@ -9,7 +9,7 @@
         small v{{$version}}
       v-spacer
     v-layout(row pb-2)
-      v-flex.relative(xs10 offset-xs1 md6 offset-md3)
+      PanelWrap
         v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title {{mainPanelTitle}}
@@ -40,6 +40,7 @@
 <script>
   import Webcam from '@/components/Webcam'
   import Pointer from '@/components/Pointer'
+  import PanelWrap from '@/components/PanelWrap'
   import Calibrator from '@/components/Calibrator'
   import CalibrationInstructions from '@/components/CalibrationInstructions'
   import Settings from '@/components/Settings'
@@ -59,6 +60,7 @@
     components: {
       Calibrator,
       CalibrationInstructions,
+      PanelWrap,
       Pointer,
       Settings,
       Webcam

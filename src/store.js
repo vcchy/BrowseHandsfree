@@ -9,9 +9,6 @@ let settings = lockr.get('settings') || {}
 settings = merge({
   cursor: {
     size: 15,
-    click: {
-      sensitivity: 0.8
-    },
 
     // Number of frames a click is active for
     clickFrameBuffer: 1
@@ -20,6 +17,10 @@ settings = merge({
   offset: {
     x: 0,
     y: 0
+  },
+
+  click: {
+    sensitivity: 0
   },
 
   scroll: {

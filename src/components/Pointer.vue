@@ -91,11 +91,7 @@
         clickFactor -= 1.4
 
         // Create artificial breakpoints
-        if (clickFactor > 0.25) clickFactor = 0.25
-        if (clickFactor < 0) clickFactor = 0
-        clickFactor *= 4.0
-        if (clickFactor < 0) clickFactor = 0
-        if (clickFactor > this.settings.cursor.click.sensitivity) clickFactor = 1
+        if (clickFactor > this.settings.click.sensitivity) clickFactor = 1
 
         this.$store.commit('merge', ['gesture', {click: clickFactor}])
         this.$store.dispatch('updateClick')
