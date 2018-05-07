@@ -35,9 +35,17 @@ export default {
     this.$store.commit('merge', ['refs', {feed: this.$refs.feed}])
     this.resizeFeed()
     window.addEventListener('resize', this.resizeFeed)
+    window.addEventListener('webkitfullscreenchange', this.resizeFeed)
+    window.addEventListener('mozfullscreenchange', this.resizeFeed)
+    window.addEventListener('fullscreenchange', this.resizeFeed)
   },
 
-  destroyed () { window.removeEventListener('resize', this.resizeFeed) },
+  destroyed () {
+    window.removeEventListener('resize', this.resizeFeed)
+    window.removeEventListener('webkitfullscreenchange', this.resizeFeed)
+    window.removeEventListener('mozfullscreenchange', this.resizeFeed)
+    window.removeEventListener('fullscreenchange', this.resizeFeed)
+  },
 
   methods: {
     stopFeed () {
