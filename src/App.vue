@@ -14,11 +14,11 @@
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title {{mainPanelTitle}}
             v-spacer
-            v-tooltip(v-if='isWebcamOn && isTracking && !isFeedVisible')
+            v-tooltip(v-if='isWebcamOn && isTracking && isFeedVisible')
               v-btn(icon @click='toggleFeed' slot='activator')
                 v-icon visibility_off
               span Hide Feed
-            v-tooltip(v-if='isWebcamOn && isTracking && isFeedVisible')
+            v-tooltip(v-if='isWebcamOn && isTracking && !isFeedVisible')
               v-btn(icon @click='toggleFeed' slot='activator')
                 v-icon visibility
               span Show Feed

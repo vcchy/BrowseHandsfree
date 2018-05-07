@@ -1,8 +1,8 @@
 <template lang="pug">
   .text-center(:class='{hidden: !isWebcamOn}').mt-2
     p(ref='feedWrap')
-      canvas.flip-h(ref='feed' :class='{hidden: isFeedVisible}')
-      v-btn(v-if='isFeedVisible' color='info' @click='toggleFeed')
+      canvas.flip-h(ref='feed' :class='{hidden: !isFeedVisible}')
+      v-btn(v-if='!isFeedVisible' color='info' @click='toggleFeed')
         v-icon.mr-2 visibility
         | Show Feed
       v-btn(v-else color='info' @click='toggleFeed')
