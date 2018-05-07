@@ -9,9 +9,6 @@ let settings = lockr.get('settings') || {}
 settings = merge({
   cursor: {
     size: 15,
-    click: {
-      sensitivity: 0.8
-    },
 
     // Number of frames a click is active for
     clickFrameBuffer: 1
@@ -20,6 +17,10 @@ settings = merge({
   offset: {
     x: 0,
     y: 0
+  },
+
+  click: {
+    sensitivity: 1.46
   },
 
   scroll: {
@@ -77,6 +78,9 @@ export default new Vuex.Store({
 
     // Whether the webcam is on or not
     isWebcamOn: false,
+
+    // Whehter the feed itself is visible
+    isFeedVisible: false,
 
     // The last face object discovered
     // There are listeners on this object (@see Pointer.vue)

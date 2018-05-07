@@ -9,11 +9,19 @@
         small v{{$version}}
       v-spacer
     v-layout(row pb-2)
-      v-flex.relative(xs10 offset-xs1 md6 offset-md3)
+      PanelWrap
         v-card.card--flex-toolbar.mb-5
           v-toolbar(card prominent dense dark color='purple lighten-2')
             v-toolbar-title {{mainPanelTitle}}
             v-spacer
+            v-tooltip(v-if='isWebcamOn && isTracking && isFeedVisible')
+              v-btn(icon @click='toggleFeed' slot='activator')
+                v-icon visibility_off
+              span Hide Feed
+            v-tooltip(v-if='isWebcamOn && isTracking && !isFeedVisible')
+              v-btn(icon @click='toggleFeed' slot='activator')
+                v-icon visibility
+              span Show Feed
             v-tooltip(v-if='isWebcamOn && isTracking')
               v-btn(icon @click='calibrate' slot='activator')
                 v-icon gps_fixed
@@ -33,13 +41,14 @@
 
     v-content
       router-view
-    v-footer(app)
-      span &copy; 2017
+    v-footer.text-xs-center(app)
+      span &copy; 2017. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
 </template>
 
 <script>
   import Webcam from '@/components/Webcam'
   import Pointer from '@/components/Pointer'
+  import PanelWrap from '@/components/PanelWrap'
   import Calibrator from '@/components/Calibrator'
   import CalibrationInstructions from '@/components/CalibrationInstructions'
   import Settings from '@/components/Settings'
@@ -51,6 +60,7 @@
     computed: mapState([
       'hasCalibrated',
       'isCalibrating',
+      'isFeedVisible',
       'isWebcamOn',
       'isTracking',
       'mainPanelTitle'
@@ -59,6 +69,7 @@
     components: {
       Calibrator,
       CalibrationInstructions,
+      PanelWrap,
       Pointer,
       Settings,
       Webcam
@@ -74,6 +85,9 @@
     },
 
     mounted () {
+      // Set the chrome background page
+      if (window.chrome && window.chrome.extension) this.$store.commit('set', ['chromeBgPage', window.chrome.extension.getBackgroundPage()])
+
       console.log(`                _.-'-'--.
                ,', ~'\` ( .'\`.
               ( ~'_ , .'(  >-)
@@ -103,8 +117,8 @@
 
     methods: {
       toggleMainPanelVisibility () { this.$store.commit('flip', 'isMainPanelVisible') },
-
       toggleWebcam () { this.$store.commit('flip', 'isWebcamOn') },
+      toggleFeed () { this.$store.commit('flip', 'isFeedVisible') },
 
       /**
        * Starts the recalibration process

@@ -86,16 +86,11 @@
         this.setPoint(face.vertices, 42, 0)
         let eyeDist = this.calcDistance(this.point[0], this.point[1])
 
-        let clickFactor = mouthWidth / eyeDist
         // 1.4 = neutral, 1.7 = smiling
-        clickFactor -= 1.4
+        let clickFactor = mouthWidth / eyeDist - this.settings.click.sensitivity
 
         // Create artificial breakpoints
-        if (clickFactor > 0.25) clickFactor = 0.25
-        if (clickFactor < 0) clickFactor = 0
-        clickFactor *= 4.0
-        if (clickFactor < 0) clickFactor = 0
-        if (clickFactor > this.settings.cursor.click.sensitivity) clickFactor = 1
+        if (clickFactor >= 0) clickFactor = 1
 
         this.$store.commit('merge', ['gesture', {click: clickFactor}])
         this.$store.dispatch('updateClick')
