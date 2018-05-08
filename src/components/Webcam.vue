@@ -21,7 +21,9 @@
       p
         small - or -
       p
-        router-link(to='about') Learn more
+        a(href='https://browsehandsfree.atlassian.net/wiki/spaces/HOWTO/overview') Read Our <b>Flight Manual</b>
+      p
+        video(src='static/vid/feed-demo-2018-05-08.mp4' autoplay controls loop)
 </template>
 
 <script>
