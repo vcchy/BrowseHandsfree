@@ -1,7 +1,8 @@
 <template lang="pug">
-  div
+  div(style='height: 100%; position: relative')
     .dasher-cursor-vert(:style='cursorVertStyles')
     .dasher-cursor-horiz(ref='dasherHoriz' :style='cursorHorizStyles')
+    .dasher-symbol-wrapper(ref='dasherWrapper' :style='dasherWrapperStyles')
 </template>
 
 <script>
@@ -16,7 +17,11 @@
       ]),
 
       cursorVertStyles () { return `top: ${this.position.top + 7}px; left: ${this.position.left + 7}px` },
-      cursorHorizStyles () { return `left: ${this.position.left + 7}px` }
+      cursorHorizStyles () { return `left: ${this.position.left + 7}px` },
+      dasherWrapperStyles () {
+        if (this.$refs.dasherWrapper) this.height = this.$refs.dasherWrapper.parentElement.clientHeight
+        return `width: ${this.width}px; height: ${this.height}px`
+      }
     },
 
     watch: {
@@ -25,11 +30,15 @@
 
     data () {
       return {
-        input: 'test',
+        // Position info for the crosshairs (same as the cursor position)
         position: {
           top: window.innerHeight / 2,
           left: window.innerWidth / 2
-        }
+        },
+
+        // The current dasher wrapper width/height
+        width: 0,
+        height: 0
       }
     },
 
@@ -38,6 +47,9 @@
     methods: {
       onLastFrame () {
         this.position = this.cursor.position
+        this.width += 20
+
+        if (window.innerWidth - this.position.left - 17 < this.width) this.width = 0
       }
     }
   }
