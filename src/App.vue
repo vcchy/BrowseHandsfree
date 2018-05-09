@@ -8,10 +8,12 @@
         span.mr-2 BrowseHandsfree
         small v{{$version}}
       v-spacer
-      v-tooltip(bottom)
+      v-tooltip.mr-3(bottom nudge-left)
         a(href='https://browsehandsfree.atlassian.net/wiki/spaces/HOWTO/overview' slot='activator')
           v-icon help
         span View Our Flight Manual
+      v-btn.mr-4(icon @click='isSidebarOpen = !isSidebarOpen')
+        v-icon menu
     v-layout(row pb-2)
       PanelWrap
         v-card.card--flex-toolbar.mb-5
@@ -45,6 +47,18 @@
 
     v-content
       router-view
+
+    v-navigation-drawer(v-model='isSidebarOpen' right fixed app)
+      v-list
+        v-list-tile(to='/')
+          v-list-tile-action
+            v-icon palette
+          v-list-tile-content Sketch Demo
+        v-list-tile(to='dev')
+          v-list-tile-action
+            v-icon games
+          v-list-tile-content Devkit
+
     v-footer.text-xs-center(app)
       span &copy; 2018. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
 </template>
@@ -81,10 +95,7 @@
 
     data () {
       return {
-        menuItems: [{
-          icon: 'bubble_chart',
-          title: 'Inspire'
-        }]
+        isSidebarOpen: false
       }
     },
 

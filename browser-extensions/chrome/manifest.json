@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Browse Handsfree",
   "description": "A Chrome Extension to help you browse the web handsfree!",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "permissions": [
     "tabs"
   ],
