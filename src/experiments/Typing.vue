@@ -2,7 +2,11 @@
   div(style='height: 100%; position: relative')
     .dasher-cursor-vert(:style='cursorVertStyles')
     .dasher-cursor-horiz(ref='dasherHoriz' :style='cursorHorizStyles')
+
     .dasher-symbol-wrapper(ref='dasherWrapper' :style='dasherWrapperStyles')
+      div(v-for='symbol in symbols' :key='symbol')
+    .dasher-symbol-overlay(:style='dasherWrapperStyles')
+      div(v-for='symbol in symbols' :key='symbol' v-html='symbol')
 </template>
 
 <script>
@@ -38,7 +42,15 @@
 
         // The current dasher wrapper width/height
         width: 0,
-        height: 0
+        height: 0,
+
+        // Dashers speed
+        speed: 30,
+
+        symbols: [
+          '&middot;',
+          '-'
+        ]
       }
     },
 
@@ -47,7 +59,7 @@
     methods: {
       onLastFrame () {
         this.position = this.cursor.position
-        this.width += 20
+        this.width += this.speed
 
         if (window.innerWidth - this.position.left - 17 < this.width) this.width = 0
       }
