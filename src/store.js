@@ -141,6 +141,11 @@ export default new Vuex.Store({
     },
 
     /**
+     * Opens closes the panel based on the camera state
+     */
+    maybeTogglePanel ({state}) { state.isMainPanelVisible = state.isWebcamOn },
+
+    /**
      * Initializes the manager
      */
     initBRFManager ({state}) { state.brfManager && state.brfManager.init(state.brfResolution, state.brfResolution, 'com.browsehandsfree') },

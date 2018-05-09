@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Sketch from '@/experiments/Sketch'
-import Dev from '@/views/Dev'
+import Typing from '@/experiments/Typing'
 
 Vue.use(Router)
 
@@ -13,9 +13,9 @@ export default new Router({
       component: Sketch
     },
     {
-      path: '/dev',
-      name: 'Dev',
-      component: Dev
+      path: '/typing',
+      name: 'Typing',
+      component: Typing
     }
   ]
 })

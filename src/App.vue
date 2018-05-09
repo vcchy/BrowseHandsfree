@@ -54,10 +54,10 @@
           v-list-tile-action
             v-icon palette
           v-list-tile-content Sketch Demo
-        v-list-tile(to='dev' @click='isSidebarOpen = false')
+        v-list-tile(to='typing' @click='isSidebarOpen = false')
           v-list-tile-action
             v-icon games
-          v-list-tile-content Devkit
+          v-list-tile-content Typing Demo
 
     v-footer.text-xs-center(app)
       span &copy; 2018. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
@@ -87,7 +87,7 @@
       headerColor () {
         switch (this.$route.name) {
           case 'Sketch': return 'yellow'
-          case 'Dev': return 'light-green'
+          case 'Typing': return 'light-green'
         }
       }
     },

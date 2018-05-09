@@ -12,6 +12,7 @@
     computed: mapState([
       'lastFace',
       'cursor',
+      'isWebcamOn',
       'settings'
     ]),
 
@@ -43,6 +44,7 @@
         this.resizeCanvas()
 
         this.offsets = bounds
+        this.$store.dispatch('maybeTogglePanel')
       })
     },
 
