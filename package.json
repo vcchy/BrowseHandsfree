@@ -1,6 +1,6 @@
 {
   "name": "browsehandsfree",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A platform for browsing the web hands-free (via face tracking)!",
   "author": "Oz Ramos <labofoz@gmail.com>",
   "private": true,

@@ -8,6 +8,10 @@
         span.mr-2 BrowseHandsfree
         small v{{$version}}
       v-spacer
+      v-tooltip(bottom)
+        a(href='https://browsehandsfree.atlassian.net/wiki/spaces/HOWTO/overview' slot='activator')
+          v-icon help
+        span View Our Flight Manual
     v-layout(row pb-2)
       PanelWrap
         v-card.card--flex-toolbar.mb-5
@@ -42,7 +46,7 @@
     v-content
       router-view
     v-footer.text-xs-center(app)
-      span &copy; 2017. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
+      span &copy; 2018. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
 </template>
 
 <script>
