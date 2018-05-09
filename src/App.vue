@@ -2,7 +2,7 @@
   v-app
     Pointer
     Calibrator
-    v-toolbar(app dense color='yellow' flat extended style='position: relative')
+    v-toolbar(app dense :color='headerColor' flat extended style='position: relative')
       v-toolbar-title
         img.mr-2(src='static/img/browsehandsfree-logo.png' height=30)
         span.mr-2 BrowseHandsfree
@@ -50,11 +50,11 @@
 
     v-navigation-drawer(v-model='isSidebarOpen' right fixed app)
       v-list
-        v-list-tile(to='/')
+        v-list-tile(to='/' @click='isSidebarOpen = false')
           v-list-tile-action
             v-icon palette
           v-list-tile-content Sketch Demo
-        v-list-tile(to='dev')
+        v-list-tile(to='dev' @click='isSidebarOpen = false')
           v-list-tile-action
             v-icon games
           v-list-tile-content Devkit
@@ -75,14 +75,22 @@
   export default {
     name: 'App',
 
-    computed: mapState([
-      'hasCalibrated',
-      'isCalibrating',
-      'isFeedVisible',
-      'isWebcamOn',
-      'isTracking',
-      'mainPanelTitle'
-    ]),
+    computed: {
+      ...mapState([
+        'hasCalibrated',
+        'isCalibrating',
+        'isFeedVisible',
+        'isWebcamOn',
+        'isTracking',
+        'mainPanelTitle'
+      ]),
+      headerColor () {
+        switch (this.$route.name) {
+          case 'Sketch': return 'yellow'
+          case 'Dev': return 'light-green'
+        }
+      }
+    },
 
     components: {
       Calibrator,
