@@ -27,6 +27,10 @@ settings = merge({
     sensitivity: 0.8
   },
 
+  typing: {
+    speed: 20
+  },
+
   speed: {
     x: 1,
     y: 1

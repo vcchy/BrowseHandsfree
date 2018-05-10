@@ -29,7 +29,8 @@
       ...mapState([
         'cursor',
         'isTracking',
-        'lastFrame'
+        'lastFrame',
+        'settings'
       ]),
 
       /**
@@ -74,9 +75,6 @@
         // The current dasher wrapper width/height
         height: 0,
 
-        // Dashers speed
-        speed: 30,
-
         symbols: [
           '&middot;',
           '&mdash;'
@@ -109,10 +107,10 @@
         this.position = this.cursor.position
 
         if (this.inGreenZone()) {
-          this.zone.green.width += this.speed
+          this.zone.green.width += this.settings.typing.speed
           this.zone.red.width = 0
         } else if (this.inRedZone()) {
-          this.zone.red.width += this.speed
+          this.zone.red.width += this.settings.typing.speed
           this.zone.green.width = 0
         } else if (this.inSafeZone()) {
           this.resetZones()
