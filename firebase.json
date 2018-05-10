@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "dist/chrome-src/**",
+      "dist/chrome-src/**/.zip"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

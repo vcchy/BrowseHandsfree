@@ -1,18 +1,24 @@
-.toolbar__title
-  img
-    vertical-align: middle
-  small
-    font-size: 0.5em
-
-.card--flex-toolbar
-  position: absolute
-  top: -48px
-  width: 100%
-
-.toolbar--fixed.toolbar--extended
-  z-index: 0
-
-.offset.tooltip
+body
   .tooltip__content
+    z-index: 11 !important
+
+  .toolbar__title
+    img
+      vertical-align: middle
+    small
+      font-size: 0.5em
+
+  .card--flex-toolbar
+    position: absolute
+    top: -48px
+    width: 100%
+
+  .toolbar--fixed.toolbar--extended
+    z-index: 1
+
+  .offset.tooltip .tooltip__content
     font-family: 'Roboto'
     top: -20px !important
+
+  .navigation-drawer, .overlay.overlay--active
+    z-index: 12

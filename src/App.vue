@@ -2,12 +2,18 @@
   v-app
     Pointer
     Calibrator
-    v-toolbar(app dense color='yellow' flat extended style='position: relative')
+    v-toolbar(app dense :color='headerColor' flat extended style='position: relative')
       v-toolbar-title
         img.mr-2(src='static/img/browsehandsfree-logo.png' height=30)
         span.mr-2 BrowseHandsfree
         small v{{$version}}
       v-spacer
+      v-tooltip.mr-3(bottom nudge-left)
+        a(href='https://browsehandsfree.atlassian.net/wiki/spaces/HOWTO/overview' slot='activator')
+          v-icon help
+        span View Our Flight Manual
+      v-btn.mr-4(icon @click='isSidebarOpen = !isSidebarOpen')
+        v-icon menu
     v-layout(row pb-2)
       PanelWrap
         v-card.card--flex-toolbar.mb-5
@@ -41,8 +47,20 @@
 
     v-content
       router-view
+
+    v-navigation-drawer(v-model='isSidebarOpen' right fixed app)
+      v-list
+        v-list-tile(to='/' @click='isSidebarOpen = false')
+          v-list-tile-action
+            v-icon palette
+          v-list-tile-content Sketch Demo
+        v-list-tile(to='typing' @click='isSidebarOpen = false')
+          v-list-tile-action
+            v-icon games
+          v-list-tile-content Typing Demo
+
     v-footer.text-xs-center(app)
-      span &copy; 2017. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
+      span &copy; 2018. Started by <a href="https://twitter.com/labofoz">Oz Ramos</a>, supported by friends &hearts;
 </template>
 
 <script>
@@ -57,14 +75,22 @@
   export default {
     name: 'App',
 
-    computed: mapState([
-      'hasCalibrated',
-      'isCalibrating',
-      'isFeedVisible',
-      'isWebcamOn',
-      'isTracking',
-      'mainPanelTitle'
-    ]),
+    computed: {
+      ...mapState([
+        'hasCalibrated',
+        'isCalibrating',
+        'isFeedVisible',
+        'isWebcamOn',
+        'isTracking',
+        'mainPanelTitle'
+      ]),
+      headerColor () {
+        switch (this.$route.name) {
+          case 'Sketch': return 'yellow'
+          case 'Typing': return 'light-green'
+        }
+      }
+    },
 
     components: {
       Calibrator,
@@ -77,10 +103,7 @@
 
     data () {
       return {
-        menuItems: [{
-          icon: 'bubble_chart',
-          title: 'Inspire'
-        }]
+        isSidebarOpen: false
       }
     },
 

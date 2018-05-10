@@ -58,6 +58,15 @@
         v-slider(label='Click Sensitivity' v-model='settings.click.sensitivity' step='0' :max='click.sensitivity.max' :min='click.sensitivity.min')
       v-flex(xs12 sm3)
         v-text-field(v-model='settings.click.sensitivity')
+
+      v-flex(xs2 sm1)
+        v-tooltip.offset(absolute=true attach='#infotip-type-speed')
+          v-icon#infotip-type-speed(color='info' slot='activator') info
+          span Typing indicator move speeds. <b>Slower &lt;---&gt; Faster</b>
+      v-flex(xs10 sm8)
+        v-slider(label='Typing Speed' v-model='settings.typing.speed' step='0' :max='typing.speed.max' :min='typing.speed.min')
+      v-flex(xs12 sm3)
+        v-text-field(v-model='settings.typing.speed')
 </template>
 
 <script>
@@ -123,6 +132,13 @@
           sensitivity: {
             min: 1,
             max: 2
+          }
+        },
+
+        typing: {
+          speed: {
+            max: 50,
+            min: 1
           }
         }
       }

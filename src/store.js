@@ -27,6 +27,10 @@ settings = merge({
     sensitivity: 0.8
   },
 
+  typing: {
+    speed: 20
+  },
+
   speed: {
     x: 1,
     y: 1
@@ -139,6 +143,11 @@ export default new Vuex.Store({
         dispatch('drawLoop')
       })])
     },
+
+    /**
+     * Opens closes the panel based on the camera state
+     */
+    maybeTogglePanel ({state}) { state.isMainPanelVisible = !state.isWebcamOn },
 
     /**
      * Initializes the manager
