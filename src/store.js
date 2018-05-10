@@ -143,7 +143,7 @@ export default new Vuex.Store({
     /**
      * Opens closes the panel based on the camera state
      */
-    maybeTogglePanel ({state}) { state.isMainPanelVisible = state.isWebcamOn },
+    maybeTogglePanel ({state}) { state.isMainPanelVisible = !state.isWebcamOn },
 
     /**
      * Initializes the manager
