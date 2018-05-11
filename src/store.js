@@ -15,8 +15,8 @@ settings = merge({
   },
 
   offset: {
-    x: 0,
-    y: 0
+    x: 738,
+    y: -232
   },
 
   click: {
@@ -24,7 +24,7 @@ settings = merge({
   },
 
   scroll: {
-    sensitivity: 0.8
+    sensitivity: 0.4
   },
 
   typing: {
@@ -32,8 +32,8 @@ settings = merge({
   },
 
   speed: {
-    x: 1,
-    y: 1
+    x: 2.45,
+    y: 2.5
   }
 }, settings)
 

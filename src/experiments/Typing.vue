@@ -2,8 +2,9 @@
   div(style='height: 100%; position: relative')
     PanelWrap
       v-card
-        v-card-title
-          h3(v-html='parsedText' style='word-wrap: break-word')
+        v-card-text
+          p <b>Letter:</b> <span v-html='curSymbol' style='font-size: 18px; font-weight: 900'></span>
+          p <b>Message:</b> {{message}}
 
     .dasher-cursor-vert(:style='cursorVertStyles')
     .dasher-cursor-horiz(ref='dasherHoriz' :style='cursorHorizStyles')
@@ -13,12 +14,13 @@
     .dasher-green-zone(ref='greenZone' :style='greenZoneStyles')
       div(v-for='symbol in symbols' :key='symbol')
     .dasher-green-zone-overlay(:style='greenZoneStyles')
-      div(v-for='symbol in symbols' :key='symbol' v-html='symbol')
+      div.dasher-symbol(v-for='symbol in symbols' :key='symbol' v-html='symbol')
 </template>
 
 <script>
   import { mapState } from 'vuex'
   import PanelWrap from '@/components/PanelWrap'
+  import morseCodes from '@/json/morseCodes.json'
 
   export default {
     components: {
@@ -46,17 +48,6 @@
       redZoneStyles () {
         if (this.$refs.redZone) this.height = this.$refs.redZone.parentElement.clientHeight
         return `width: ${this.zone.red.width}px; height: ${this.height}px`
-      },
-
-      /**
-       * Parses in HTML Entities
-       */
-      parsedText () {
-        let text = this.text
-        text = text.replace(/\*/g, '&middot;')
-        text = text.replace(/-/g, '&mdash;')
-
-        return text
       }
     },
 
@@ -76,12 +67,16 @@
         height: 0,
 
         symbols: [
-          '&middot;',
-          '&mdash;'
+          '·',
+          '—',
+          '&nbsp;'
         ],
 
-        // The current textual content
-        text: '',
+        // The current symbol string
+        curSymbol: '',
+
+        // Once the symbol is finished with a space, it gets added to this as an ascii character
+        message: '',
 
         zone: {
           green: {
@@ -116,8 +111,8 @@
           this.resetZones()
         }
 
-        if (this.zone.green.width > window.innerWidth - this.position.left - 17) this.typeSymbol()
-        else if (this.zone.red.width > this.position.left + 7) this.removeSymbol()
+        this.maybeAddSymbol()
+        this.maybeRemoveSymbol()
       },
 
       /**
@@ -136,20 +131,39 @@
       },
 
       /**
-       * Inputs a symbol (back/spaces are symbols)
+       * Adds a symbol to the current letter
        */
-      typeSymbol () {
-        const $greenZone = this.$refs.greenZone
-        this.text += this.position.top < $greenZone.offsetTop + 93 + $greenZone.clientHeight / 2 ? '*' : '-'
-        this.resetZones()
+      maybeAddSymbol () {
+        if (this.zone.green.width > window.innerWidth - this.position.left - 17) {
+          let $el = document.elementFromPoint(this.position.left, this.position.top)
+
+          if ($el && $el.classList.contains('dasher-symbol')) {
+            if ($el.innerHTML === '&nbsp;') this.addSymbolToMessage()
+            else this.curSymbol += $el.innerHTML
+          }
+
+          this.resetZones()
+        }
       },
 
       /**
-       * Removes a symbol
+       * Parses the current symbol and adds it to the message
        */
-      removeSymbol () {
-        this.text = this.text.slice(0, -1)
-        this.resetZones()
+      addSymbolToMessage () {
+        let letter = morseCodes[this.curSymbol]
+        if (letter) this.message += letter
+        else if (!letter && !this.curSymbol) this.message += ' '
+        this.curSymbol = ''
+      },
+
+      /**
+       * Removes a symbol from the current letter
+       */
+      maybeRemoveSymbol () {
+        if (this.zone.red.width > this.position.left + 7) {
+          this.curSymbol = this.curSymbol.slice(0, -1)
+          this.resetZones()
+        }
       }
     }
   }
