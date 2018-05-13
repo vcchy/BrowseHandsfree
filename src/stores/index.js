@@ -2,40 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { merge } from 'lodash'
 import lockr from 'lockr'
+import settings from '@/stores/config/settings'
 
 Vue.use(Vuex)
-
-let settings = lockr.get('settings') || {}
-settings = merge({
-  cursor: {
-    size: 15,
-
-    // Number of frames a click is active for
-    clickFrameBuffer: 1
-  },
-
-  offset: {
-    x: 738,
-    y: -232
-  },
-
-  click: {
-    sensitivity: 1.46
-  },
-
-  scroll: {
-    sensitivity: 0.4
-  },
-
-  typing: {
-    speed: 20
-  },
-
-  speed: {
-    x: 2.45,
-    y: 2.5
-  }
-}, settings)
 
 export default new Vuex.Store({
   state: {
@@ -106,7 +75,9 @@ export default new Vuex.Store({
       pointer: null
     },
 
-    settings
+    settings,
+
+    userscripts: lockr.get('userscripts') || []
   },
 
   mutations: {
@@ -142,6 +113,14 @@ export default new Vuex.Store({
       commit('set', ['lastFrame', requestAnimationFrame(() => {
         dispatch('drawLoop')
       })])
+    },
+
+    /**
+     * Deletes the userscript
+     */
+    deleteUserscript ({state}, scriptBeingDeleted) {
+      const index = state.userscripts.indexOf(scriptBeingDeleted)
+      state.userscripts.splice(index, 1)
     },
 
     /**

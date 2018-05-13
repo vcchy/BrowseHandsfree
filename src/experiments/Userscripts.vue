@@ -3,7 +3,7 @@
     ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false' v-on:confirm='deleteRecord' confirmLabel='Yes, Delete' cancelLabel='No, Cancel' title='Confirm Delete')
       p Are you sure you want to delete this userscript? <b>This action cannot be undone!</b>
 
-    v-data-table(ref='table' v-model='selected' select-all item-key='id' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
+    v-data-table(ref='table' v-model='selected' select-all item-key='id' :headers='table.headers' :items='userscripts' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
       //- Headers
       template(slot='headers' slot-scope='props')
         tr
@@ -50,14 +50,16 @@
       template(slot='expand' slot-scope='props')
         v-card(flat)
           v-card-text(style='padding: 0')
-            Codemirror(ref='editor' v-model='userscript.code' :options='codemirrorOpts' @input='onCodemirrorChange')
+            Codemirror(ref='editor' v-model='userscript.code' :options='codemirrorOpts' @input='save')
 </template>
 
 <script>
   import ConfirmDialog from '@/components/ConfirmDialog'
   import Codemirror from '@/setup/Codemirror'
-  import {debounce} from 'lodash'
+  import { debounce } from 'lodash'
+  import { mapState } from 'vuex'
   import lockr from 'lockr'
+
   const UUID = require('uuid/v4')
 
   const newItemClone = {
@@ -75,6 +77,12 @@
     components: {
       ConfirmDialog,
       Codemirror
+    },
+
+    computed: {
+      ...mapState([
+        'userscripts'
+      ])
     },
 
     data () {
@@ -111,7 +119,7 @@
         curUserscriptIndex: -1,
 
         // "Built-in" userscripts
-        userscripts: {
+        table: {
           headers: [
             {
               text: 'Name',
@@ -127,9 +135,7 @@
               value: 'domains',
               sortable: false
             }
-          ],
-
-          items: lockr.get('userscripts') || []
+          ]
         }
       }
     },
@@ -145,7 +151,7 @@
        */
       toggleAll () {
         if (this.selected.length) this.selected = []
-        else this.selected = this.userscripts.items.slice()
+        else this.selected = this.userscripts.slice()
       },
 
       /**
@@ -158,7 +164,7 @@
 
         if (props.expanded) {
           this.curUserscriptIndex = props.index
-          this.userscript = this.userscripts.items[this.curUserscriptIndex]
+          this.userscript = this.userscripts[this.curUserscriptIndex]
           this.$nextTick(() => {
             this.$refs.editor.codemirror.focus()
           })
@@ -181,9 +187,9 @@
        * Deletes a record
        */
       deleteRecord () {
-        const index = this.userscripts.items.indexOf(this.scriptBeingDeleted)
-        this.userscripts.items.splice(index, 1)
+        this.$store.dispatch('deleteUserscript', this.scriptBeingDeleted)
         this.isConfirmDialogActive = false
+        this.save()
       },
 
       /**
@@ -195,7 +201,7 @@
         script.name = 'Untitled'
         script.description = 'New userscript'
         script.domains = '<All>'
-        this.userscripts.items.push(script)
+        this.userscripts.push(script)
 
         this.$nextTick(() => {
           this.selected.push(script)
@@ -208,8 +214,8 @@
        * Called whenever a change is made to autosave it
        * @param {STR} code The codemirror code
        */
-      onCodemirrorChange: debounce(function () {
-        lockr.set('userscripts', this.userscripts.items)
+      save: debounce(function () {
+        lockr.set('userscripts', this.userscripts)
       }, 500, {leading: true, trailing: true})
     }
   }

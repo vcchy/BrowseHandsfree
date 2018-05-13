@@ -4,7 +4,7 @@ import Package from '~/package.json'
 import Vue from 'vue'
 import App from './App'
 import router from './router.js'
-import store from './store.js'
+import store from '@/stores/index.js'
 import {
   Vuetify,
   VApp,
