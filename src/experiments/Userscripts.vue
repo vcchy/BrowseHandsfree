@@ -22,10 +22,16 @@
           td {{props.item.description}}
           td {{props.item.domains}}
           td
-            v-btn(icon color='primary')
+            v-btn(icon color='primary' @click='props.expanded = !props.expanded')
               v-icon create
             v-btn(v-if='props.item.deletable' icon color='error' @click='showConfirmDeleteModal')
               v-icon delete
+
+      //- Editor
+      template(slot='expand' slot-scope='props')
+        v-card(flat)
+          v-card-text
+            h1 Test
 </template>
 
 <script>
