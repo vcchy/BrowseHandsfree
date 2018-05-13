@@ -3,7 +3,7 @@
     PanelWrap
       v-card
         v-card-text
-          p <b>Letter:</b> <span v-html='curSymbol' style='font-size: 18px; font-weight: 900'></span>
+          p <b>Letter:</b> <span v-html='curSymbol' style='font-size: 18px; font-weight: 900'></span> <span v-html='predictedLetter' style='font-weight: 900; font-size: 18px; color: red'></span>
           p <b>Message:</b> {{message}}
 
     .dasher-cursor-vert(:style='cursorVertStyles')
@@ -48,7 +48,12 @@
       redZoneStyles () {
         if (this.$refs.redZone) this.height = this.$refs.redZone.parentElement.clientHeight
         return `width: ${this.zone.red.width}px; height: ${this.height}px`
-      }
+      },
+
+      /**
+       * Shows a predicted letter, based on the current symbols
+       */
+      predictedLetter () { return morseCodes[this.curSymbol] || '' }
     },
 
     watch: {
@@ -161,7 +166,9 @@
        */
       maybeRemoveSymbol () {
         if (this.zone.red.width > this.position.left + 7) {
-          this.curSymbol = this.curSymbol.slice(0, -1)
+          if (this.curSymbol.length) this.curSymbol = this.curSymbol.slice(0, -1)
+          else this.message = this.message.slice(0, -1)
+
           this.resetZones()
         }
       }
