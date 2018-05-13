@@ -50,12 +50,14 @@
       template(slot='expand' slot-scope='props')
         v-card(flat)
           v-card-text(style='padding: 0')
-            Codemirror(ref='editor' v-model='userscript.code' :options='codemirrorOpts')
+            Codemirror(ref='editor' v-model='userscript.code' :options='codemirrorOpts' @input='onCodemirrorChange')
 </template>
 
 <script>
   import ConfirmDialog from '@/components/ConfirmDialog'
   import Codemirror from '@/setup/Codemirror'
+  import {debounce} from 'lodash'
+  import lockr from 'lockr'
   const UUID = require('uuid/v4')
 
   const newItemClone = {
@@ -127,7 +129,7 @@
             }
           ],
 
-          items: []
+          items: lockr.get('userscripts') || []
         }
       }
     },
@@ -156,6 +158,7 @@
 
         if (props.expanded) {
           this.curUserscriptIndex = props.index
+          this.userscript = this.userscripts.items[this.curUserscriptIndex]
           this.$nextTick(() => {
             this.$refs.editor.codemirror.focus()
           })
@@ -199,7 +202,15 @@
           this.curUserscriptIndex = this.userscripts.length - 1
           this.$refs[script.id].$emit('click')
         })
-      }
+      },
+
+      /**
+       * Called whenever a change is made to autosave it
+       * @param {STR} code The codemirror code
+       */
+      onCodemirrorChange: debounce(function () {
+        lockr.set('userscripts', this.userscripts.items)
+      }, 500, {leading: true, trailing: true})
     }
   }
 </script>
