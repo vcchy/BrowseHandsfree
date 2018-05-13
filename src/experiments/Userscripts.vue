@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false')
     v-data-table(v-model='selected' select-all item-key='name' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
       //- Headers
       template(slot='headers' slot-scope='props')
@@ -19,16 +20,23 @@
           td {{props.item.description}}
           td {{props.item.domains}}
           td
-            v-btn(icon color='success')
+            v-btn(icon color='primary')
               v-icon create
-            v-btn(v-if='props.item.deletable' icon color='error')
+            v-btn(v-if='props.item.deletable' icon color='error' @click='isConfirmDialogActive = !isConfirmDialogActive')
               v-icon delete
 </template>
 
 <script>
+  import ConfirmDialog from '@/components/ConfirmDialog'
+
   export default {
+    components: {
+      ConfirmDialog
+    },
+
     data () {
       return {
+        isConfirmDialogActive: false,
 
         // Helpers for the header template
         pagination: {sortBy: 'name'},
