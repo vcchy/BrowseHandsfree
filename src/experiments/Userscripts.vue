@@ -1,6 +1,8 @@
 <template lang="pug">
   div
-    ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false')
+    ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false' v-on:confirm='deleteRecord' confirmLabel='Yes, Delete' cancelLabel='No, Cancel' title='Confirm Delete')
+      p Are you sure you want to delete this userscript? <b>This action cannot be undone!</b>
+
     v-data-table(v-model='selected' select-all item-key='name' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
       //- Headers
       template(slot='headers' slot-scope='props')
@@ -22,7 +24,7 @@
           td
             v-btn(icon color='primary')
               v-icon create
-            v-btn(v-if='props.item.deletable' icon color='error' @click='isConfirmDialogActive = !isConfirmDialogActive')
+            v-btn(v-if='props.item.deletable' icon color='error' @click='showConfirmDeleteModal')
               v-icon delete
 </template>
 
@@ -37,6 +39,9 @@
     data () {
       return {
         isConfirmDialogActive: false,
+
+        // The script potentially being deleted
+        scriptBeingDeleted: null,
 
         // Helpers for the header template
         pagination: {sortBy: 'name'},
@@ -108,9 +113,31 @@
     },
 
     methods: {
+      /**
+       * Toggles all the userscripts
+       */
       toggleAll () {
         if (this.selected.length) this.selected = []
         else this.selected = this.userscripts.items.slice()
+      },
+
+      /**
+       * Shows the confirm delete model
+       *
+       * @param The record being deleted
+       */
+      showConfirmDeleteModal (script) {
+        this.scriptBeingDeleted = script
+        this.isConfirmDialogActive = true
+      },
+
+      /**
+       * Deletes a record
+       */
+      deleteRecord () {
+        const index = this.userscripts.items.indexOf(this.scriptBeingDeleted)
+        this.userscripts.items.splice(index, 1)
+        this.isConfirmDialogActive = false
       }
     }
   }
