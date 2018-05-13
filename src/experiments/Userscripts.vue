@@ -3,7 +3,7 @@
     ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false' v-on:confirm='deleteRecord' confirmLabel='Yes, Delete' cancelLabel='No, Cancel' title='Confirm Delete')
       p Are you sure you want to delete this userscript? <b>This action cannot be undone!</b>
 
-    v-data-table(v-model='selected' select-all item-key='name' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
+    v-data-table(v-model='selected' select-all item-key='id' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
       //- Headers
       template(slot='headers' slot-scope='props')
         tr
@@ -18,11 +18,24 @@
         tr(:active='props.selected')
           td(width='50px')
             v-checkbox(:input-value='props.selected' primary @click='props.selected = !props.selected')
-          td {{props.item.name}}
-          td {{props.item.description}}
-          td {{props.item.domains}}
+
+          //- Read Mode
+          template(v-if='curUserscriptIndex !== props.index')
+            td {{props.item.name}}
+            td {{props.item.description}}
+            td {{props.item.domains}}
+
+          //- Edit Mode
+          template(v-else)
+            td
+              v-text-field(v-model='props.item.name')
+            td
+              v-text-field(v-model='props.item.description')
+            td
+              v-text-field(v-model='props.item.domains')
+
           td
-            v-btn(icon color='primary' @click='props.expanded = !props.expanded')
+            v-btn(icon color='primary' @click='toggleEditor(props)')
               v-icon create
             v-btn(v-if='props.item.deletable' icon color='error' @click='showConfirmDeleteModal')
               v-icon delete
@@ -30,16 +43,18 @@
       //- Editor
       template(slot='expand' slot-scope='props')
         v-card(flat)
-          v-card-text
-            h1 Test
+          v-card-text(style='padding: 0')
+            Codemirror(ref='editor' v-model='userscript.code' :options='codemirrorOpts')
 </template>
 
 <script>
   import ConfirmDialog from '@/components/ConfirmDialog'
+  import Codemirror from '@/setup/Codemirror'
 
   export default {
     components: {
-      ConfirmDialog
+      ConfirmDialog,
+      Codemirror
     },
 
     data () {
@@ -52,6 +67,29 @@
         // Helpers for the header template
         pagination: {sortBy: 'name'},
         selected: [],
+
+        // Codemirror Options
+        codemirrorOpts: {
+          mode: 'yaml-frontmatter',
+          base: 'javascript',
+          lineWrapping: true,
+          lineNumbers: true,
+          tabSize: 2,
+          keyMap: 'sublime'
+        },
+
+        // The current userscript being edited
+        userscript: {
+          id: '',
+          name: '',
+          selected: null,
+          description: '',
+          domains: '',
+          deletable: null,
+          code: ''
+        },
+        // The currently selected userscript index
+        curUserscriptIndex: -1,
 
         // "Built-in" userscripts
         userscripts: {
@@ -67,46 +105,56 @@
             },
             {
               text: 'Domains',
-              value: 'domains'
+              value: 'domains',
+              sortable: false
             },
             {
               text: 'Actions',
-              value: 'actions'
+              value: 'actions',
+              sortable: false
             }
           ],
 
           items: [
             {
+              id: 'com.browsehandsfree.hyperlinks',
               value: false,
               name: 'Hyperlinks & Buttons',
               selected: true,
               description: 'Handle hyperlink and button clicks',
               domains: '<All>',
-              deletable: false
+              deletable: false,
+              code: ''
             },
             {
+              id: 'com.browsehandsfree.textfields',
               value: false,
               name: 'Text Fields',
               selected: true,
               description: 'Handle interactions with text fields',
               domains: '<All>',
-              deletable: false
+              deletable: false,
+              code: ''
             },
             {
+              id: 'com.browsehandsfree.toggles',
               value: false,
               name: 'Toggles and Selects',
               selected: true,
               description: 'Handle interactions with checkboxes, radios, dropdowns, and select fields',
               domains: '<All>',
-              deletable: false
+              deletable: false,
+              code: ''
             },
             {
+              id: 'com.browsehandsfree.youtube',
               value: false,
               name: 'YouTube',
               selected: true,
               description: 'Handle interactions with YouTube videos, including 360 videos!',
               domains: 'https://youtube.com, https://m.youtube.com',
-              deletable: true
+              deletable: true,
+              code: ''
             }
           ]
         }
@@ -125,6 +173,24 @@
       toggleAll () {
         if (this.selected.length) this.selected = []
         else this.selected = this.userscripts.items.slice()
+      },
+
+      /**
+       * Toggles the editor and sets its focus
+       *
+       * @param {OBJ} props The scope passed into the editor template from the v-data-table
+       */
+      toggleEditor (props) {
+        props.expanded = !props.expanded
+
+        if (props.expanded) {
+          this.curUserscriptIndex = props.index
+          this.$nextTick(() => {
+            this.$refs.editor.codemirror.focus()
+          })
+        } else {
+          this.curUserscriptIndex = -1
+        }
       },
 
       /**
