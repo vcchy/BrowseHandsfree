@@ -70,8 +70,7 @@
 
         // Codemirror Options
         codemirrorOpts: {
-          mode: 'yaml-frontmatter',
-          base: 'javascript',
+          mode: 'javascript',
           lineWrapping: true,
           lineNumbers: true,
           tabSize: 2,
