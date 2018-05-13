@@ -3,7 +3,7 @@
     ConfirmDialog(:isActive='isConfirmDialogActive' v-on:confirm:cancel='isConfirmDialogActive = false' v-on:confirm='deleteRecord' confirmLabel='Yes, Delete' cancelLabel='No, Cancel' title='Confirm Delete')
       p Are you sure you want to delete this userscript? <b>This action cannot be undone!</b>
 
-    v-data-table(v-model='selected' select-all item-key='id' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
+    v-data-table(ref='table' v-model='selected' select-all item-key='id' :headers='userscripts.headers' :items='userscripts.items' :rows-per-page-items='[25,50,100,{"text":"All","value":-1}]')
       //- Headers
       template(slot='headers' slot-scope='props')
         tr
@@ -12,6 +12,12 @@
             v-checkbox(:input-value='props.all' :indeterminate='props.indeterminate' primary @click='toggleAll')
           th(v-for='header in props.headers' :key='header.text' :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']" @click='changeSort(header.value)')
             | {{header.text}}
+          th
+            | Actions
+            v-tooltip(top)
+              v-btn(icon color='success' slot='activator' @click='addNewScript')
+                v-icon add_circle
+              span New Userscript
 
       //- Rows
       template(slot='items' slot-scope='props')
@@ -35,7 +41,7 @@
               v-text-field(v-model='props.item.domains')
 
           td
-            v-btn(icon color='primary' @click='toggleEditor(props)')
+            v-btn(icon color='primary' @click='toggleEditor(props)' :ref='props.item.id')
               v-icon create
             v-btn(v-if='props.item.deletable' icon color='error' @click='showConfirmDeleteModal')
               v-icon delete
@@ -50,6 +56,18 @@
 <script>
   import ConfirmDialog from '@/components/ConfirmDialog'
   import Codemirror from '@/setup/Codemirror'
+  const UUID = require('uuid/v4')
+
+  const newItemClone = {
+    id: '',
+    value: false,
+    name: '',
+    selected: true,
+    description: '',
+    domains: '',
+    deletable: true,
+    code: ''
+  }
 
   export default {
     components: {
@@ -106,56 +124,10 @@
               text: 'Domains',
               value: 'domains',
               sortable: false
-            },
-            {
-              text: 'Actions',
-              value: 'actions',
-              sortable: false
             }
           ],
 
-          items: [
-            {
-              id: 'com.browsehandsfree.hyperlinks',
-              value: false,
-              name: 'Hyperlinks & Buttons',
-              selected: true,
-              description: 'Handle hyperlink and button clicks',
-              domains: '<All>',
-              deletable: false,
-              code: ''
-            },
-            {
-              id: 'com.browsehandsfree.textfields',
-              value: false,
-              name: 'Text Fields',
-              selected: true,
-              description: 'Handle interactions with text fields',
-              domains: '<All>',
-              deletable: false,
-              code: ''
-            },
-            {
-              id: 'com.browsehandsfree.toggles',
-              value: false,
-              name: 'Toggles and Selects',
-              selected: true,
-              description: 'Handle interactions with checkboxes, radios, dropdowns, and select fields',
-              domains: '<All>',
-              deletable: false,
-              code: ''
-            },
-            {
-              id: 'com.browsehandsfree.youtube',
-              value: false,
-              name: 'YouTube',
-              selected: true,
-              description: 'Handle interactions with YouTube videos, including 360 videos!',
-              domains: 'https://youtube.com, https://m.youtube.com',
-              deletable: true,
-              code: ''
-            }
-          ]
+          items: []
         }
       }
     },
@@ -209,6 +181,24 @@
         const index = this.userscripts.items.indexOf(this.scriptBeingDeleted)
         this.userscripts.items.splice(index, 1)
         this.isConfirmDialogActive = false
+      },
+
+      /**
+       * Adds a new userscript
+       */
+      addNewScript () {
+        let script = Object.assign({}, newItemClone)
+        script.id = UUID()
+        script.name = 'Untitled'
+        script.description = 'New userscript'
+        script.domains = '<All>'
+        this.userscripts.items.push(script)
+
+        this.$nextTick(() => {
+          this.selected.push(script)
+          this.curUserscriptIndex = this.userscripts.length - 1
+          this.$refs[script.id].$emit('click')
+        })
       }
     }
   }
