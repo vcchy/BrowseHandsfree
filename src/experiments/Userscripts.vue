@@ -10,7 +10,7 @@
           th
             | Active?
             v-checkbox(:input-value='props.all' :indeterminate='props.indeterminate' primary @click='toggleAll')
-          th(v-for='header in props.headers' :key='header.text' :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']" @click='changeSort(header.value)')
+          th(v-for='header in props.headers' :key='header.text' :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']")
             | {{header.text}}
           th
             | Actions
@@ -34,11 +34,11 @@
           //- Edit Mode
           template(v-else)
             td
-              v-text-field(v-model='props.item.name')
+              v-text-field(v-model='props.item.name' @change='save')
             td
-              v-text-field(v-model='props.item.description')
+              v-text-field(v-model='props.item.description' @change='save')
             td
-              v-text-field(v-model='props.item.domains')
+              v-text-field(v-model='props.item.domains' @change='save')
 
           td
             v-btn(icon color='primary' @click='toggleEditor(props)' :ref='props.item.id')
@@ -123,7 +123,8 @@
           headers: [
             {
               text: 'Name',
-              value: 'name'
+              value: 'name',
+              sortable: false
             },
             {
               text: 'Description',
@@ -198,6 +199,7 @@
       addNewScript () {
         let script = Object.assign({}, newItemClone)
         script.id = UUID()
+        console.log(UUID())
         script.name = 'Untitled'
         script.description = 'New userscript'
         script.domains = '<All>'
