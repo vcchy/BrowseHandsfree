@@ -1,7 +1,10 @@
 <template lang="pug">
   v-app
+    //- Utils and other "global" components
     Pointer
     Calibrator
+    UserscriptRunner
+
     v-toolbar(app dense :color='headerColor' flat extended style='position: relative')
       v-toolbar-title
         img.mr-2(src='static/img/browsehandsfree-logo.png' height=30)
@@ -68,13 +71,14 @@
 </template>
 
 <script>
-  import Webcam from '@/components/Webcam'
-  import Pointer from '@/components/Pointer'
+  import Webcam from '@/components/global/Webcam'
+  import Pointer from '@/components/global/Pointer'
   import PanelWrap from '@/components/PanelWrap'
-  import Calibrator from '@/components/Calibrator'
-  import CalibrationInstructions from '@/components/CalibrationInstructions'
-  import Settings from '@/components/Settings'
+  import Calibrator from '@/components/global/Calibrator'
+  import CalibrationInstructions from '@/components/util/CalibrationInstructions'
+  import Settings from '@/components/global/Settings'
   import { mapState } from 'vuex'
+  import UserscriptRunner from '@/components/util/UserscriptRunner'
 
   export default {
     name: 'App',
@@ -104,6 +108,7 @@
       PanelWrap,
       Pointer,
       Settings,
+      UserscriptRunner,
       Webcam
     },
 

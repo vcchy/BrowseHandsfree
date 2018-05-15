@@ -34,11 +34,11 @@
           //- Edit Mode
           template(v-else)
             td
-              v-text-field(v-model='props.item.name' @change='save')
+              v-text-field(v-model='props.item.name' @input='save')
             td
-              v-text-field(v-model='props.item.description' @change='save')
+              v-text-field(v-model='props.item.description' @input='save')
             td
-              v-text-field(v-model='props.item.domains' @change='save')
+              v-text-field(v-model='props.item.domains' @input='save')
 
           td
             v-btn(icon color='primary' @click='toggleEditor(props)' :ref='props.item.id')
