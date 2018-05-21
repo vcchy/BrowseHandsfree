@@ -81,6 +81,7 @@
 
     computed: {
       ...mapState([
+        'chromeBgPage',
         'userscripts'
       ])
     },
@@ -144,6 +145,7 @@
     mounted () {
       this.$store.commit('set', ['isMainPanelVisible', false])
       this.toggleAll()
+      this.maybeUpdateUserscripts()
     },
 
     methods: {
@@ -199,7 +201,6 @@
       addNewScript () {
         let script = Object.assign({}, newItemClone)
         script.id = UUID()
-        console.log(UUID())
         script.name = 'Untitled'
         script.description = 'New userscript'
         script.domains = '<All>'
@@ -218,7 +219,13 @@
        */
       save: debounce(function () {
         lockr.set('userscripts', this.userscripts)
-      }, 500, {leading: true, trailing: true})
+        this.maybeUpdateUserscripts()
+      }, 500, {leading: true, trailing: true}),
+
+      /**
+       * Pushes userscripts to the tabs
+       */
+      maybeUpdateUserscripts () { this.chromeBgPage && this.chromeBgPage.maybeUpdateUserscripts({ userscripts: this.userscripts }) }
     }
   }
 </script>

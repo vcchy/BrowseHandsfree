@@ -29,8 +29,7 @@
     },
 
     watch: {
-      lastFace (face) { this.drawCursor(face) },
-      'gesture.click' (click) { if (click === 1) this.triggerClick() }
+      lastFace (face) { this.drawCursor(face) }
     },
 
     mounted () { this.$store.commit('merge', ['refs', {pointer: this.$refs.pointer}]) },

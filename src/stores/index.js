@@ -137,16 +137,13 @@ export default new Vuex.Store({
      * Sets the click states
      */
     updateClick ({state}) {
-      if (state.cursor.isDown) state.cursor.framesSinceClicked++
-
       // Clicked and held, so release the "clicked"
-      if (state.cursor.clicked && state.cursor.isDown && state.cursor.framesSinceClicked > state.settings.cursor.clickFrameBuffer) { state.cursor.clicked = false }
+      if (state.cursor.clicked && state.cursor.isDown) state.cursor.clicked = false
 
       // Just Clicked
-      if (state.gesture.click === 1 && !state.cursor.isDown && !state.cursor.clicked) {
+      if (state.gesture.click === 1 && !state.cursor.isDown) {
         state.cursor.isDown = true
         state.cursor.clicked = true
-        state.cursor.framesSinceClicked = 0
       }
 
       if (state.gesture.click !== 1) {

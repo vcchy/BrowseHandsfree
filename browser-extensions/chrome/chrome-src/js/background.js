@@ -7,7 +7,22 @@ function updateCursor (data) {
       chrome.tabs.sendMessage(tab.id, {
         browsehandsfree: true,
         method: 'updateCursor',
-        data: data
+        data
+      })
+    })
+  })
+}
+
+/**
+ * Update the set of userscripts
+ */
+function updateUserscripts (data) {
+  chrome.tabs.query({active: true, currentWindow: false}, (tabs) => {
+    tabs.forEach((tab) => {
+      chrome.tabs.sendMessage(tab.id, {
+        browsehandsfree: true,
+        method: 'updateUserscripts',
+        data
       })
     })
   })
