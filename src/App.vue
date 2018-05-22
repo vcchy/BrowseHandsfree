@@ -121,6 +121,7 @@
     mounted () {
       // Set the chrome background page
       if (window.chrome && window.chrome.extension) this.$store.commit('set', ['chromeBgPage', window.chrome.extension.getBackgroundPage()])
+      this.$store.dispatch('postUserscripts')
 
       console.log(`                _.-'-'--.
                ,', ~'\` ( .'\`.

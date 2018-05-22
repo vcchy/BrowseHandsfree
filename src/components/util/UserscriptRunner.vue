@@ -41,8 +41,6 @@
         // eslint-disable-next-line
         let $el = document.elementFromPoint(this.cursor.position.left, this.cursor.position.top)
         // eslint-disable-next-line
-        let self = this
-        // eslint-disable-next-line
         let $ = jquery
 
         if ($el) $el = $($el)

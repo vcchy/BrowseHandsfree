@@ -124,6 +124,11 @@ export default new Vuex.Store({
     },
 
     /**
+     * Pushes userscripts to content pages
+     */
+    postUserscripts ({state}) { state.chromeBgPage && state.chromeBgPage.updateUserscripts({ userscripts: state.userscripts }) },
+
+    /**
      * Opens closes the panel based on the camera state
      */
     maybeTogglePanel ({state}) { state.isMainPanelVisible = !state.isWebcamOn },

@@ -145,7 +145,6 @@
     mounted () {
       this.$store.commit('set', ['isMainPanelVisible', false])
       this.toggleAll()
-      this.maybeUpdateUserscripts()
     },
 
     methods: {
@@ -219,13 +218,8 @@
        */
       save: debounce(function () {
         lockr.set('userscripts', this.userscripts)
-        this.maybeUpdateUserscripts()
-      }, 500, {leading: true, trailing: true}),
-
-      /**
-       * Pushes userscripts to the tabs
-       */
-      maybeUpdateUserscripts () { this.chromeBgPage && this.chromeBgPage.maybeUpdateUserscripts({ userscripts: this.userscripts }) }
+        this.$store.dispatch('postUserscripts')
+      }, 500, {leading: true, trailing: true})
     }
   }
 </script>

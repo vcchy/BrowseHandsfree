@@ -1,7 +1,6 @@
 let BrowseHandsfree = {
-  $store: {
-    cursor: {}
-  },
+  cursor: {},
+  settings: {},
 
   $refs: {
     // The cursor element
@@ -17,11 +16,14 @@ let BrowseHandsfree = {
      * @param {OBJ} data The cursor and associated data {cursor, face, gesture, settings}
      */
     updateCursor (data) {
-      let cursor = this.$store.cursor = data.cursor
+      let cursor = this.cursor = data.cursor
+      this.settings = data.settings
 
       this.$refs.cursor.style.display = 'block'
       this.$refs.cursor.style.left = `${cursor.position.left}px`
       this.$refs.cursor.style.top = `${cursor.position.top}px`
+
+      this.methods.runUserscripts.apply(this)
     },
 
     /**
@@ -29,7 +31,26 @@ let BrowseHandsfree = {
      * @param {ARR} userscripts The collection of userscripts
      */
     updateUserscripts (userscripts) {
-      this.$store.userscripts = userscripts
+      this.userscripts = userscripts
+    },
+
+    /**
+     * Goes through all the userscripts
+     */
+    runUserscripts () {
+      let bhf = this
+      let $el = document.elementFromPoint(this.cursor.position.left, this.cursor.position.top)
+      let $ = jQuery
+
+      if ($el) $el = $($el)
+
+      this.userscripts.forEach((script) => {
+        try {
+          eval(script.code)
+        } catch (e) {
+          console.error(e)
+        }
+      })
     }
   }
 }
