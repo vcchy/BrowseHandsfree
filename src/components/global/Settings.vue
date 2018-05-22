@@ -149,11 +149,11 @@
        * Update min's and max's based on window size
        */
       updateSettingBounds () {
-        this.offset.x.min = window.innerWidth * -2
-        this.offset.x.max = window.innerWidth * 2
+        this.offset.x.min = window.outerWidth * -2
+        this.offset.x.max = window.outerWidth * 2
 
-        this.offset.y.min = window.innerHeight * -2
-        this.offset.y.max = window.innerHeight * 2
+        this.offset.y.min = window.outerHeight * -2
+        this.offset.y.max = window.outerHeight * 2
       }
     }
   }

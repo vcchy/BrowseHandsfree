@@ -12,6 +12,7 @@
       ...mapState([
         'cursor',
         'lastFace',
+        'settings',
         'userscripts'
       ])
     },
@@ -26,7 +27,10 @@
           color: 'error',
           isVisible: false,
           text: ''
-        }
+        },
+
+        // Temporary data
+        temp: {}
       }
     },
 

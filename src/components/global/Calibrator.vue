@@ -70,8 +70,8 @@
        * Reposition the calibrator
        */
       repositionCalibrator () {
-        this.top = window.innerHeight / 2
-        this.left = window.innerWidth / 2
+        this.top = window.outerHeight / 2
+        this.left = window.outerWidth / 2
       },
 
       /**

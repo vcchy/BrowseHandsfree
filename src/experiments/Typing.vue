@@ -64,8 +64,8 @@
       return {
         // Position info for the crosshairs (same as the cursor position)
         position: {
-          top: window.innerHeight / 2 + 24,
-          left: window.innerWidth / 2
+          top: window.outerHeight / 2 + 24,
+          left: window.outerWidth / 2
         },
 
         // The current dasher wrapper width/height
@@ -124,8 +124,8 @@
        * Determines if we are within the safezone
        */
       inSafeZone () { return !this.inGreenZone() && !this.inRedZone() },
-      inRedZone () { return this.cursor.position.left < window.innerWidth / 2 - 65 },
-      inGreenZone () { return this.cursor.position.left > window.innerWidth / 2 + 44 },
+      inRedZone () { return this.cursor.position.left < window.outerWidth / 2 - 65 },
+      inGreenZone () { return this.cursor.position.left > window.outerWidth / 2 + 44 },
 
       /**
        * Resets the zones
@@ -139,7 +139,7 @@
        * Adds a symbol to the current letter
        */
       maybeAddSymbol () {
-        if (this.zone.green.width > window.innerWidth - this.position.left - 17) {
+        if (this.zone.green.width > window.outerWidth - this.position.left - 17) {
           let $el = document.elementFromPoint(this.position.left, this.position.top)
 
           if ($el && $el.classList.contains('dasher-symbol')) {

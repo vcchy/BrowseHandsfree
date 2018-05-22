@@ -1,6 +1,10 @@
 let BrowseHandsfree = {
+  // The cursor values, see @/store/index.js
   cursor: {},
+  // The user settings, see @/store/index.js
   settings: {},
+  // Temporary variables
+  temp: {},
 
   $refs: {
     // The cursor element
@@ -22,6 +26,12 @@ let BrowseHandsfree = {
       this.$refs.cursor.style.display = 'block'
       this.$refs.cursor.style.left = `${cursor.position.left}px`
       this.$refs.cursor.style.top = `${cursor.position.top}px`
+
+      if (cursor.isDown) {
+        this.$refs.cursor.classList.add('browsehandsfree-pulse')
+      } else {
+        this.$refs.cursor.classList.remove('browsehandsfree-pulse')
+      }
 
       this.methods.runUserscripts.apply(this)
     },
@@ -56,16 +66,6 @@ let BrowseHandsfree = {
 }
 
 BrowseHandsfree.$refs.cursor.id = 'browsehandsfree-cursor'
-BrowseHandsfree.$refs.cursor.style.background = 'rgba(255, 0, 0, 0.85)'
-BrowseHandsfree.$refs.cursor.style.border = '2px solid rgba(255, 0, 0, 0.85)'
-BrowseHandsfree.$refs.cursor.style.transformOrigin = 'center'
-BrowseHandsfree.$refs.cursor.style.width = '15px'
-BrowseHandsfree.$refs.cursor.style.height = '15px'
-BrowseHandsfree.$refs.cursor.style.borderRadius = '15px'
-BrowseHandsfree.$refs.cursor.style.opacity = 0.8
-BrowseHandsfree.$refs.cursor.style.position = 'fixed'
-BrowseHandsfree.$refs.cursor.style.display = 'none'
-BrowseHandsfree.$refs.cursor.style.zIndex = 9999999
 document.body.appendChild(BrowseHandsfree.$refs.cursor)
 
 /**

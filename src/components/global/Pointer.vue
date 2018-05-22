@@ -46,21 +46,20 @@
 
         face = face.face
         const ratio = {
-          width: window.innerWidth / $feed.width,
-          height: window.innerHeight / $feed.height
+          width: window.outerWidth / $feed.width,
+          height: window.outerHeight / $feed.height
         }
         // The canvas is mirrored, so left needs a few more operations
         let left = -face.translationX * ratio.width + $feed.width + parseInt(this.settings.offset.x) - this.settings.cursor.size / 2
         let top = face.translationY * ratio.height + parseInt(this.settings.offset.y) - this.settings.cursor.size / 2
 
-        left += Math.sin(face.rotationY) * (this.settings.speed.x * window.innerWidth) + $feed.offsetLeft
-        top += Math.sin(face.rotationX) * (this.settings.speed.y * window.innerHeight)
+        left += Math.sin(face.rotationY) * (this.settings.speed.x * window.outerWidth) + $feed.offsetLeft
+        top += Math.sin(face.rotationX) * (this.settings.speed.y * window.outerHeight)
 
         this.refs.pointer.style = `left: ${left}px; top: ${top}px; width: ${this.settings.cursor.size}px; height: ${this.settings.cursor.size}px; border-radius: ${this.settings.cursor.size}px; background: ${this.color}`
         this.$store.commit('merge', ['cursor', {position: {left, top}}])
 
         this.detectSmile(face)
-        this.maybeScrollPage()
         this.sendMessageToExtension()
       },
 
@@ -140,33 +139,6 @@
           ev.initMouseEvent(eventName, true, true, window, null, this.cursor.position.left, this.cursor.position.top, 0, 0, false, false, false, false, 0, null)
           $el.dispatchEvent(ev)
         }
-      },
-
-      /**
-       * Maybe scrolls the page
-       */
-      maybeScrollPage () {
-        let scrollBy = {
-          x: 0,
-          y: 0
-        }
-
-        // Vertical Scroll
-        if (this.cursor.position.top < 0) {
-          scrollBy.y = this.cursor.position.top
-        } else if (this.cursor.position.top > window.innerHeight) {
-          scrollBy.y = this.cursor.position.top - window.innerHeight
-        }
-        // Horiz Scroll
-        if (this.cursor.position.left < 0) {
-          scrollBy.x = this.cursor.position.left
-        } else if (this.cursor.position.left > window.innerWidth) {
-          scrollBy.x = this.cursor.position.left - window.innerWidth
-        }
-
-        scrollBy.x *= this.settings.scroll.sensitivity
-        scrollBy.y *= this.settings.scroll.sensitivity
-        scrollBy && window.scrollBy(scrollBy.x, scrollBy.y)
       },
 
       /**
